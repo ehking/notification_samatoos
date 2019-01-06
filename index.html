@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<script>
+
+    if (typeof module === 'object') {
+        window.module = module;
+        module = undefined;
+    }</script>
+
+<!-- normal script imports etc  -->
+<script src="node_modules/jquery/dist/jquery.js"></script>
+<script language="JavaScript" type="application/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+<script language="JavaScript" type="application/javascript" src="assets/js/anim.js"></script>
+<script language="JavaScript" type="application/javascript" src="assets/js/ajaxservice.js"></script>
+<!--<script language="JavaScript" type="application/javascript" src="assets/js/index.js"></script>-->
+
+
+<!-- Insert this line after script imports -->
+<script>if (window.module) module = window.module;</script>
+<script>window.$ = window.jQuery = require('jquery');
+//
+</script>
+<div class="row">
+        <div class="set">
+            <header style="width: 450px">
+
+                <div id="relativeOffset" style="float:left;margin-top: 50px;font-size: 21px;margin-left: -200px;color: #34495e">
+                    <div class="line">
+                        <div class="square el">توسعه های سامانه های</div>
+                    </div>
+
+                    <div class="line">
+                        <div class="circle el">رایانه ای سماتوس</div>
+                    </div>
+
+                </div>
+
+                <img src="assets/img/landing.jpg" style="width: 200px;height: 150px;float: right;margin: 5px">
+            </header>
+            <main>
+                <p>در حال بارگزاری </p>
+            </main>
+        </div>
+
+
+
+        <script type="application/javascript">
+            window.jQuery = window.$ = require('jquery');
+            anime.timeline({loop: true})
+            var relativeOffset = anime.timeline();
+
+            relativeOffset
+                .add({
+                    targets: '#relativeOffset .square.el',
+                    translateX: 240,
+                    easing: 'easeOutExpo',
+                    offset: 800,
+                    duration: 3000
+                })
+                .add({
+                    targets: '#relativeOffset .circle.el',
+                    translateX: 240,
+                    easing: 'easeOutExpo',
+                    offset: '-=800',
+                    duration: 3000
+                });
+            $(document).ready(function () {
+               cheeklogin();
+            });
+            //      const notification = {
+            //          title: 'BTC Alert',
+            //          body: 'BTC just beat your target price!'
+            //      }
+            //      const myNotification = new window.Notification(notification.title, notification)
+            //
+            //      myNotification.show();
+            //
+            //      const notifier = require('node-notifier');
+            //      // String
+            //      notifier.notify('Message');
+            //
+            //      // Object
+            //      notifier.notify({
+            //          title: 'My notification',
+            //          message: 'Hello, there!'
+            //      });
+
+//            if (window.webkitNotifications) {
+//                console.log("Notifications are supported!");
+//            }
+//            else {
+//                console.log("Notifications are not supported for this Browser/OS version yet.");
+//            }
+//            var obj = {charged: 350};
+//
+//            var JSobject = anime({
+//                targets: obj,
+//                charged: 250,
+//                round: 1,
+//                easing: 'linear',
+//                update: function () {
+//                    var el = document.querySelector('.svg #curve');
+//                    el.setAttribute("d",
+//                        "M 800 300 Q 400 " + JSON.stringify(obj.charged) + " 0 300 L 0 0 L 800 0 L 800 300 Z");
+//
+//                }
+//            });
+
+            //      $('.svg').slideUp();
+            //      const {BrowserWindow} = require('electron').remote
+            //      const path = require('path')
+            //
+            //
+            //
+            //      win = new BrowserWindow({ width: 400, height: 320 })
+            //
+            //      win.loadFile('index.html')
+            //      win.show()
+
+        // setTimeout(cheeklogin,1000)
+
+        </script>
+
+</body>
+</html>

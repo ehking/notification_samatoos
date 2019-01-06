@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" dir="rtl">
+    <title>login</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+
+
+<div class="main-form">
+    <i class="logo"> <img src="assets/img/logo.jpg" alt=""></i>
+    <form action="" id="valid1" name="registration">
+        <input type="text" placeholder="آدرس سایت" value="" name="url" id="url">
+        <button class="button" onclick="nextAPI()">مرحله بعد</button>
+    </form>
+
+<div id="form2" style="display: none">
+    <form action="" id="valid2" name="registration" >
+        <input type="text" placeholder="نام کاربری" value="" name="username" id="username">
+        <input type="password" placeholder="گذرواژه" value="" name="password" id="password">
+        <br/>
+        <br/>
+        <p style="text-align: right;font-size: 13px;margin: 0">کد امنیتی را وارد کنید</p>
+        <img src="" id="imgcaptcha" alt="" style="width: 100%">
+        <input type="text" placeholder="کد امنیتی" value="" name="captcha" id="captcha">
+        <hr>
+        <button class="button" onclick="callAPI()">وارد شوید</button>
+    </form>
+
+
+</div>
+
+</div>
+
+
+<script type="application/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
+<script type="application/javascript" src="node_modules/jquery-validation/dist/jquery.validate.min.js"></script>
+<script type="application/javascript" src="assets/js/ajaxservice.js"></script>
+<script type="application/javascript">
+    window.jQuery = window.$ = require('jquery');
+        $(document).ready(function () {
+           keytar.getPassword('url_Office','url_Office').then(function (data) {
+               $('#url').text(data);
+           })
+        });
+
+        function nextAPI() {
+            url_Office = $('#url').val();
+            url_Office = url_Office.replace('UI/login.php', 'Runtime/process.php?');
+            url_Office = url_Office.replace('UI/index.php', 'Runtime/process.php?');
+            $('#valid1').validate({ // initialize the plugin
+                rules: {
+                    url: {
+                        required: true,
+                    },
+                },
+                messages: {
+                    url: {
+                        required: "آدرس سایت را وارد کنید",
+                    },
+                },
+                success: "valid1",
+                submitHandler: function () {
+                    captchareload(url_Office);
+                }
+
+            });
+        }
+        function captchareload(url_Offices) {
+            // url_Office=url_Offices+'&module=Captcha&action=show&width=173&height=50';
+            // $.ajax({
+            //     type : "GET",
+            //     url : url_Office,
+            //     // data : JSON.stringify(data),
+            //     contentType: "application/json; charset=UTF-8",
+            //     success: function (response) {
+            //         $('#imgcaptcha').attr('src',url_Office);
+            //         $('#valid1').fadeOut(1000);
+            //         $('#valid2').fadeIn(2000);
+                    keytar.setPassword('url_Office','url_Office',url_Offices);
+            //
+            //     },
+            //     statusCode: {
+            //         // 503: function() {
+            //         //     alert("Username already exist");
+            //         // }
+            //     },
+            //     error: function (e) {
+            //         alert("url cheeked");
+            //     }
+            // });
+                 $('#valid1').fadeOut(1000);
+                  $('#form2').fadeIn(2000);
+
+        }
+
+    function callAPI() {
+                $('#valid2').validate({ // initialize the plugin
+                    rules: {
+                        captcha: {
+                            required: true,
+                        },
+                        username: {
+                            required: true,
+                        },
+                        password: {
+                            required: true
+                        }
+                    },
+                    messages: {
+                        username: {
+                            required: "نام کاربری خود را وارد کنید"
+                        },
+                        password: {
+                            required: "گذرواژه خود را وارد کتید"
+                        },
+                        captcha: {
+                            required: "کد امنیتی خود را وارد کتید"
+                        }
+                    },
+                    success: "valid2",
+                    submitHandler: function () {
+                        url_Office = url_Office.replace('UI/login.php', 'Runtime/process.php?');
+                        url_Office = url_Office.replace('UI/index.php', 'Runtime/process.php?');
+                        var usern = $('#username').val();
+                        var passwd = $('#password').val();
+                        var capt=$('#captcha').val();
+                        AjaxService(url_Office,usern,passwd,capt);
+                    }
+                });
+    }
+
+
+</script>
+
+</body>
+</html>

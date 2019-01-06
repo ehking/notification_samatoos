@@ -1,0 +1,37 @@
+{
+  "name": "electron-quick-start",
+  "version": "1.0.0",
+  "description": "A minimal Electron application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-packager . Notification-samatoos --platform win32 --asar  ",
+    "build:mac": "electron-packager . Notification-samatoos --platform darwin --asar  ",
+    "build:linux": "electron-packager . Notification-samatoos --platform linux --asar ",
+    "build:all": "electron-packager . Notification-samatoos --platform all --asar --icon ./icons/todos --out ./build"
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^2.0.0",
+    "electron-rebuild": "^1.8.2"
+  },
+  "dependencies": {
+    "bootstrap": "^4.1.3",
+    "jquery": "^3.3.1",
+    "jquery-form-validator": "^2.3.79",
+    "jquery-validation": "^1.18.0",
+    "keytar": "*",
+    "node-notifier": "^5.2.1",
+    "popper.js": "^1.14.4",
+    "scss": "^0.2.4"
+  }
+}

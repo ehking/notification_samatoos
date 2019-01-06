@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+<script src="node_modules/jquery/dist/jquery.js"></script>
+<script src="node_modules/swiper/dist/js/swiper.min.js"></script>
+<link rel="stylesheet" href="node_modules/swiper/dist/css/swiper.min.css">
+<link rel="stylesheet" href="assets/css/landing.css">
+<script src="node_modules/jquery/dist/jquery.js"></script>
+<script language="JavaScript" type="application/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+<script language="JavaScript" type="application/javascript" src="assets/js/anim.js"></script>
+<script language="JavaScript" type="application/javascript" src="assets/js/ajaxservice.js"></script>
+<input type="checkbox" id="chkbox">
+
+<!-- MENU HIDDEN UPPER -->
+<nav class="menu">
+        <label for="chkbox"><a class="close">[CLOSE]</a></label>
+    <ul>
+        <li><a href="http://ericktateishi.esy.es/portfolio" target="_blank" class="links">Portfolio</a></li>
+        <li><a href="http://ericktateishi.esy.es/" target="_blank" class="links">Home</a></li>
+        <li><a href="http://ericktateishi.esy.es/#me" target="_blank" class="links">About me</a></li>
+        <li><a href="http://ericktateishi.esy.es/#cont" target="_blank" class="links">Contact</a></li>
+    </ul>
+    <div class="social">
+        <a href="#">
+            <img src="http://uploads.webflow.com/576d8b86eb5794cb5889e1a8/57b0cb0d2a4ca7f058f79d6a_instagram-512.png">
+        </a>
+        <a href="#">
+            <img src="http://www.unico-steinhude.de/img/contact-fb.png">
+        </a>
+        <a href="#">
+
+        </a>
+        <a href="https://codepen.io/tateishi-e/" target="_blank">
+            <img src="https://blog.codepen.io/wp-content/uploads/2012/06/Button-Fill-White-Large.png">
+        </a>
+
+        <a href="mailto:ericktateishi@gmail.com" class="inf">ericktateishi@gmail.com</a>
+        <a href="tel:011997736565" class="inf">(99) 99999-9999</a>
+    </div>
+</nav>
+<!-- ARROW -->
+<section class="link">
+        <label for="chkbox">
+            <div class="all-arrow">
+                <div href="#" class="an-arrow">^</div>
+
+            </div>
+        </label>
+</section>
+
+
+<div class="blog-slider">
+    <div class="blog-slider__wrp swiper-wrapper">
+
+        <div class="blog-slider__item swiper-slide">
+
+            <div class="blog-slider__content">
+                <span class="blog-slider__code">26 December 2019</span>
+                <div class="blog-slider__title">Lorem Ipsum Dolor2</div>
+                <div class="blog-slider__text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae voluptate repellendus magni illo ea animi?</div>
+            </div>
+        </div>
+
+        <div class="blog-slider__item swiper-slide">
+
+            <div class="blog-slider__content">
+                <span class="blog-slider__code">26 December 2019</span>
+                <div class="blog-slider__title">Lorem Ipsum Dolor</div>
+                <div class="blog-slider__text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae voluptate repellendus magni illo ea animi?</div>
+            </div>
+        </div>
+
+    </div>
+    <div class="blog-slider__pagination"></div>
+</div>
+
+
+<script type="application/javascript">
+    window.jQuery = window.$ = require('jquery');
+    $(document).ready(function () {
+        var swiper = new Swiper('.blog-slider', {
+            spaceBetween: 30,
+            effect: 'fade',
+            loop: true,
+            mousewheel: {
+                invert: false,
+            },
+            // autoHeight: true,
+            pagination: {
+                el: '.blog-slider__pagination',
+                clickable: true,
+            }
+        });
+        // console.log(ipcRenderer.send('data'));
+    });
+    let tes=ipcRenderer.sendSync('data1');
+    console.log(tes);
+
+
+
+
+</script>
+</body>
+</html>
