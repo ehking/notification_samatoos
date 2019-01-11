@@ -8,6 +8,15 @@
 </head>
 <body>
 
+<div id="block">
+    <div class="load-wrapp" style="display: none">
+        <div class="load-2">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <p id="blinkp">درحال بارگزاری</p>
+        </div>
+    </div>
 
 
 <div class="main-form">
@@ -17,15 +26,18 @@
         <button class="button" onclick="nextAPI()">مرحله بعد</button>
     </form>
 
-<div id="form2" style="display: none">
-    <form action="" id="valid2" name="registration" >
+<div id="form2" >
+    <form action="" id="valid2" name="registration"  style="display: none">
         <input type="text" placeholder="نام کاربری" value="" name="username" id="username">
         <input type="password" placeholder="گذرواژه" value="" name="password" id="password">
         <br/>
         <br/>
-        <p style="text-align: right;font-size: 13px;margin: 0">کد امنیتی را وارد کنید</p>
-        <img src="" id="imgcaptcha" alt="" style="width: 100%">
-        <input type="text" placeholder="کد امنیتی" value="" name="captcha" id="captcha">
+        <!--<div id="captcha_re" style="display: none">-->
+            <p style="text-align: right;font-size: 13px;margin: 0">کد امنیتی را وارد کنید</p>
+            <img src="" id="imgcaptcha" alt="" style="width: 100%">
+            <input type="text" placeholder="کد امنیتی" value="" name="captcha" id="captcha">
+        <!--</div>-->
+
         <hr>
         <button class="button" onclick="callAPI()">وارد شوید</button>
     </form>
@@ -36,11 +48,13 @@
 </div>
 
 
+</div>
 <script type="application/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
 <script type="application/javascript" src="node_modules/jquery-validation/dist/jquery.validate.min.js"></script>
-<script type="application/javascript" src="assets/js/ajaxservice.js"></script>
+<script type="application/javascript" src="assets/js/index.js"></script>
 <script type="application/javascript">
     window.jQuery = window.$ = require('jquery');
+
         $(document).ready(function () {
            keytar.getPassword('url_Office','url_Office').then(function (data) {
                $('#url').text(data);
@@ -48,6 +62,8 @@
         });
 
         function nextAPI() {
+
+
             url_Office = $('#url').val();
             url_Office = url_Office.replace('UI/login.php', 'Runtime/process.php?');
             url_Office = url_Office.replace('UI/index.php', 'Runtime/process.php?');
@@ -70,30 +86,41 @@
             });
         }
         function captchareload(url_Offices) {
-            // url_Office=url_Offices+'&module=Captcha&action=show&width=173&height=50';
-            // $.ajax({
-            //     type : "GET",
-            //     url : url_Office,
-            //     // data : JSON.stringify(data),
-            //     contentType: "application/json; charset=UTF-8",
-            //     success: function (response) {
-            //         $('#imgcaptcha').attr('src',url_Office);
-            //         $('#valid1').fadeOut(1000);
-            //         $('#valid2').fadeIn(2000);
-                    keytar.setPassword('url_Office','url_Office',url_Offices);
-            //
-            //     },
-            //     statusCode: {
-            //         // 503: function() {
-            //         //     alert("Username already exist");
-            //         // }
-            //     },
-            //     error: function (e) {
-            //         alert("url cheeked");
-            //     }
-            // });
-                 $('#valid1').fadeOut(1000);
-                  $('#form2').fadeIn(2000);
+            url_Office=url_Offices+'&module=Captcha&action=show&width=173&height=50';
+            // url_Office=url_Offices+'&module=Captcha&action=check';
+            $.ajax({
+                type : "GET",
+                url : url_Office,
+                // data : JSON.stringify(data),
+                contentType: "application/json; charset=UTF-8",
+                success: function (response) {
+                    // console.log(url_Office);
+                    setTimeout(function () {
+                        $('#imgcaptcha').attr('src',url_Office);
+                        $('#valid1').fadeOut(1000);
+                        $('#valid2').fadeIn(2000);
+                        keytar.setPassword('url_Office','url_Office',url_Offices);
+                        keytar.setPassword('captcha','en_di',true);
+                        hideloading();
+                    },1000)
+                },
+                beforeSend: function(){
+                     showloading()
+                },
+                statusCode: {
+                    // 503: function() {
+                    //     alert("Username already exist");
+                    // }
+                },
+                error: function (e) {
+                    // alert("url cheeked");
+                     hideloading();
+                    Swal("ادرس وارد شده اشتباه میباشد","pll",'error')
+                },
+
+            });
+                 // $('#valid1').fadeOut(1000);
+                 //  $('#form2').fadeIn(2000);
 
         }
 
@@ -127,8 +154,18 @@
                         url_Office = url_Office.replace('UI/index.php', 'Runtime/process.php?');
                         var usern = $('#username').val();
                         var passwd = $('#password').val();
-                        var capt=$('#captcha').val();
-                        AjaxService(url_Office,usern,passwd,capt);
+                         keytar.getPassword('captcha','en_di').then(function (data) {
+                             if (data==true)
+                                 capt=$('#captcha').val();
+                             else
+                                  capt=false;
+
+                             keytar.getPassword('url_Office','url_Office').then(function (data) {
+                                 AjaxService(data,usern,passwd,capt);
+                             });
+
+                         });
+
                     }
                 });
     }

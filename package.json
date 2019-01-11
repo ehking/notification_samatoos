@@ -4,11 +4,7 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "build:win": "electron-packager . Notification-samatoos --platform win32 --asar  ",
-    "build:mac": "electron-packager . Notification-samatoos --platform darwin --asar  ",
-    "build:linux": "electron-packager . Notification-samatoos --platform linux --asar ",
-    "build:all": "electron-packager . Notification-samatoos --platform all --asar --icon ./icons/todos --out ./build"
+    "start": "electron ."
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
@@ -21,7 +17,7 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^2.0.0",
+    "electron": "^3.0.7",
     "electron-rebuild": "^1.8.2"
   },
   "dependencies": {

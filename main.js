@@ -28,7 +28,7 @@ minecraftAutoLauncher.isEnabled()
 function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({width: 450, height: 200, frame: false})
-    let landing = new BrowserWindow({width: 380, height: 490, frame: false, show: false});
+    let landing = new BrowserWindow({width: 500, height: 600, frame: false, show: false});
     // and load the index.html of the app.
     mainWindow.loadFile('index.html');
     mainWindow.webContents.openDevTools()
@@ -37,7 +37,12 @@ function createWindow() {
 
 
 
-
+ipcMain.on('login',()=>{
+   landing.loadFile('login.html');
+    landing.webContents.openDevTools()
+    landing.show();
+    mainWindow.hide()
+});
 
 
     // mainWindow.setResizable(false)
