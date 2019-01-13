@@ -56,15 +56,14 @@
     window.jQuery = window.$ = require('jquery');
 
         $(document).ready(function () {
-           keytar.getPassword('url_Office','url_Office').then(function (data) {
-               $('#url').text(data);
+           keytar.getPassword('config','orig_url').then(function (data) {
+               $('#url').val(data);
            })
         });
 
         function nextAPI() {
-
-
             url_Office = $('#url').val();
+            keytar.setPassword('config','orig_url',url_Office);
             url_Office = url_Office.replace('UI/login.php', 'Runtime/process.php?');
             url_Office = url_Office.replace('UI/index.php', 'Runtime/process.php?');
             $('#valid1').validate({ // initialize the plugin
@@ -82,7 +81,6 @@
                 submitHandler: function () {
                     captchareload(url_Office);
                 }
-
             });
         }
         function captchareload(url_Offices) {
@@ -117,11 +115,9 @@
                      hideloading();
                     Swal("ادرس وارد شده اشتباه میباشد","pll",'error')
                 },
-
             });
                  // $('#valid1').fadeOut(1000);
                  //  $('#form2').fadeIn(2000);
-
         }
 
     function callAPI() {
@@ -161,7 +157,7 @@
                                   capt=false;
 
                              keytar.getPassword('url_Office','url_Office').then(function (data) {
-                                 AjaxService(data,usern,passwd,capt);
+                                 AjaxService(data,usern,passwd,$('#captcha').val());
                              });
 
                          });

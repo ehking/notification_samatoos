@@ -17,6 +17,7 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.6.3",
     "electron": "^3.0.7",
     "electron-rebuild": "^1.8.2"
   },

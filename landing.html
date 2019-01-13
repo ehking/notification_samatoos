@@ -2,63 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title></title>
 </head>
 
 <body>
+
 <script src="node_modules/jquery/dist/jquery.js"></script>
 <script src="node_modules/swiper/dist/js/swiper.min.js"></script>
 <link rel="stylesheet" href="node_modules/swiper/dist/css/swiper.min.css">
 <link rel="stylesheet" href="assets/css/landing.css">
+<link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.css">
+<!--<link rel="stylesheet" href="assets/css/main.css">-->
 <script src="node_modules/jquery/dist/jquery.js"></script>
 <script language="JavaScript" type="application/javascript" src="node_modules/jquery/dist/jquery.js"></script>
 <script language="JavaScript" type="application/javascript" src="assets/js/anim.js"></script>
-<script language="JavaScript" type="application/javascript" src="assets/js/ajaxservice.js"></script>
+<script language="JavaScript" type="application/javascript" src="assets/js/index.js"></script>
 <input type="checkbox" id="chkbox">
 
+
+<div class="load-wrapp" style="display: none">
+    <div class="load-2">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <p id="blinkp">درحال بارگزاری</p>
+    </div>
+</div>
 <!-- MENU HIDDEN UPPER -->
 <nav class="menu">
-        <label for="chkbox"><a class="close">[CLOSE]</a></label>
+        <label for="chkbox"><a class="close"><i class="fa fa-chevron-up"></i></a></label>
+    <p style="text-align: right;margin-right: 20px;margin-top: -15px;margin-bottom: 0">تنظیمات <i class="fa fa-tools"></i></p>
+
     <ul>
-        <li><a href="http://ericktateishi.esy.es/portfolio" target="_blank" class="links">Portfolio</a></li>
-        <li><a href="http://ericktateishi.esy.es/" target="_blank" class="links">Home</a></li>
-        <li><a href="http://ericktateishi.esy.es/#me" target="_blank" class="links">About me</a></li>
-        <li><a href="http://ericktateishi.esy.es/#cont" target="_blank" class="links">Contact</a></li>
+        <li class="links" style="text-align: right"><input type="checkbox" class="links">اجرای خودکار برنامه</li>
+        <li><a href="#" onclick="logout()" class="links">خروج</a></li>
     </ul>
-    <div class="social">
-        <a href="#">
-            <img src="http://uploads.webflow.com/576d8b86eb5794cb5889e1a8/57b0cb0d2a4ca7f058f79d6a_instagram-512.png">
-        </a>
-        <a href="#">
-            <img src="http://www.unico-steinhude.de/img/contact-fb.png">
-        </a>
-        <a href="#">
 
-        </a>
-        <a href="https://codepen.io/tateishi-e/" target="_blank">
-            <img src="https://blog.codepen.io/wp-content/uploads/2012/06/Button-Fill-White-Large.png">
-        </a>
-
-        <a href="mailto:ericktateishi@gmail.com" class="inf">ericktateishi@gmail.com</a>
-        <a href="tel:011997736565" class="inf">(99) 99999-9999</a>
-    </div>
 </nav>
 <!-- ARROW -->
 <section class="link">
         <label for="chkbox">
             <div class="all-arrow">
-                <div href="#" class="an-arrow">^</div>
-
+                <div href="#" class="an-arrow"><i class="fa fa-bars fa-2x"></i></div>
             </div>
         </label>
 </section>
 
 
 <div class="blog-slider">
+
     <div class="blog-slider__wrp swiper-wrapper">
-
         <div class="blog-slider__item swiper-slide">
-
             <div class="blog-slider__content">
                 <span class="blog-slider__code">26 December 2019</span>
                 <div class="blog-slider__title">Lorem Ipsum Dolor2</div>
@@ -69,7 +63,9 @@
         <div class="blog-slider__item swiper-slide">
 
             <div class="blog-slider__content">
+
                 <span class="blog-slider__code">26 December 2019</span>
+
                 <div class="blog-slider__title">Lorem Ipsum Dolor</div>
                 <div class="blog-slider__text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae voluptate repellendus magni illo ea animi?</div>
             </div>
@@ -83,6 +79,7 @@
 <script type="application/javascript">
     window.jQuery = window.$ = require('jquery');
     $(document).ready(function () {
+        showloading();
         var swiper = new Swiper('.blog-slider', {
             spaceBetween: 30,
             effect: 'fade',
@@ -99,11 +96,9 @@
         // console.log(ipcRenderer.send('data'));
     });
     let tes=ipcRenderer.sendSync('data1');
-    console.log(tes);
-
-
-
-
+    keytar.getPassword('config','islogin').then(function (data) {
+        console.log(data);
+    })
 </script>
 </body>
 </html>

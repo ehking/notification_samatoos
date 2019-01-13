@@ -11,6 +11,8 @@
     overflow: hidden;
 }
 
+
+
 body {
     background-color: #3498db;
     background-image: linear-gradient(147deg, #FFE53B 0%, #fd3838 74%);
@@ -27,7 +29,7 @@ body {
     background: #fff;
     box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
     padding: 25px;
-    border-radius: 25px;
+    border-radius: 10px;
     height: 400px;
     transition: all .3s;
 }
@@ -290,14 +292,12 @@ body {
     top:15px;
     margin: 0;
 }
-
-
-
 .link {
     width: 100%;
     height: 40px;
     position: fixed;
-    top: 0px;
+    top: 12px;
+    right: 12px;
     z-index: 5;
     transition: all .3s;
 }
@@ -362,28 +362,30 @@ body {
 .menu ul {
     list-style: none;
     position: relative;
-    padding: 40px;
+    padding: 10px;
     float: left;
 }
 .menu ul li {
     width: auto;
     padding: 5px;
+    border-right: 2px solid red;
+    margin-top: 2px;
 }
 .menu a.links {
     width: 200px;
     display: inline-block;
     text-decoration: none;
-    text-align: left;
-    color: #ecf0f1;
+    text-align: right;
+    color: #373a3b;
     transition: all .4s;
     font-weight: 300;
-    box-shadow: inset 0 -2px rgba(52, 73, 94,.4);
+    /*box-shadow: inset 0 -2px rgba(52, 73, 94,.4);*/
     transition: box-shadow .2s linear;
-    font-size: 20px;
+    font-size: 18px;
 }
 .menu a.links:hover {
-    color: rgba(52, 73, 94,1.0);
-    box-shadow: inset 0 -8px 0 rgba(52, 73, 94,1.0);
+    /*color: rgba(52, 73, 94,1.0);*/
+    /*box-shadow: inset 0 -8px 0 rgba(52, 73, 94,1.0);*/
 }
 .menu img.profile {
     float: left;
@@ -423,9 +425,10 @@ body {
     text-decoration: none;
 }
 .menu .close {
-    color: #ecf0f1;
+    color: #343738;
     transition: all .3s;
     cursor: pointer;
+    margin-left: 20px;
 }
 .menu .close:hover {
     color: #333;
@@ -526,3 +529,16 @@ body {
         float: right;
     }
 }
+.load-wrapp {
+    width: 100%;
+    height: 40px;
+    margin: 0 10px 10px 0;
+    padding: 220px 20px 20px;
+    border-radius: 5px;
+    text-align: center;
+    /*background: #fffafe;*/
+    position: fixed;
+}
+
+.load-wrapp p {padding: 0 0 20px;}
+.load-wrapp:last-child {margin-right: 0;}

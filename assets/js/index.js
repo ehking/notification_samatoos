@@ -16,20 +16,54 @@ function AjaxService(url_Office, username, password,capt) {
             var login=l_login(url_Office,capt,username,pass);
             if (login){
                 console.log(login);
+                if (login['success']===true && !login['error']){
+                    Swal("success",'success',"success");
+                    getintro(url_Office);
+                    ipcRenderer.send('landing');
+                    return;
+                } else{
+                    Swal("خطا در انجام عملیات",login.error,"error");
+                    reloadcaptcha(url_Office);
+                    hideloading();
+                    return;
+                }
             }
         }
     }
     setTimeout(function () {
         Swal("error","error","error");
+        reloadcaptcha(url_Office);
         hideloading();
     },2000);
 }
+
+function  reloadcaptcha(url_office) {
+    // keytar.getPassword('captcha','en_di').then(function (data) {
+    //    if (data===true){
+    //        url_Office=url_Offices+'&module=Captcha&action=check';
+    //    }
+    // });
+   url_captcha=url_office+'&module=Captcha&action=show&width=173&height=50';
+   $.ajax({
+       type:'GET',
+       url:url_captcha,
+       contentType: "application/json; charset=UTF-8",
+       success:function (res) {
+           $('#imgcaptcha').attr('src',url_Office);
+       },
+       error:function () {
+           Swal("error","error","error");
+       }
+   });
+}
 function l_login(url_Office,capt,username,pass) {
+    showloading();
     if(!capt)
         url_login = url_Office + 'module=Login&action=login' + '&username=' + username + '&pass=' + pass;
     else
         url_login = url_Office + 'module=Login&action=login' + '&username=' + username + '&pass=' + pass+'&captcha='+capt;
 
+    console.log(url_login);
     $.ajax({
         type:"GET",
         url:url_login,
@@ -51,9 +85,8 @@ function l_login(url_Office,capt,username,pass) {
 
 }
 function  getsalt(url_office,username) {
-
+        showloading();
         url_salt = url_office + 'module=Login&action=getSalt&uname=' + username;
-
         $.ajax({
             type:"GET",
             url:url_salt,
@@ -107,6 +140,14 @@ function gettoken(url_Office,password,salt) {
     return pass;
 }
 
+function  logout() {
+    // logout user
+    keytar.deletePassword('config','islogin');
+    ipcRenderer.send('login');
+    Swal("success",'logout',"info");
+}
+
+
 function saveintro(arr, islogin) {
     var newinbox = []
     for (var i = 0; i < arr.length; i++) {
@@ -117,7 +158,7 @@ function saveintro(arr, islogin) {
     if (islogin !== "1") {
         return  shwointro(arr);
     }
-    saveconfig("1");
+    // saveconfig("1");
 }
 
 function shwointro(arr) {
@@ -126,10 +167,10 @@ function shwointro(arr) {
     //  ipcRenderer.send('landing');
     // ipcRenderer.send('data1',arr);
     keytar.getPassword('inbox-store', 'inbox').then(function (data) {
-        var sinbox = data
+        var sinbox = data;
         sinbox = sinbox.split(',');
         // console.log(sinbox)
-        console.log(arr)
+        console.log(arr);
         for (var j = 0; j < arr.length; j++) {
             var inbox = arr[j]['state']['inbox1']
             var ssinbox = sinbox[j]
@@ -176,7 +217,7 @@ function shwointro(arr) {
 }
 
 function saveconfig(def) {
-    if (def === "1") {
+    if (def ===1) {
         keytar.setPassword('config', 'islogin', '1');
         keytar.setPassword('config', 'time', '5');
     } else {
@@ -187,8 +228,10 @@ function saveconfig(def) {
 function cheeklogin() {
     const keytar = require('keytar');
     keytar.getPassword('config', 'islogin').then(function (data) {
-        if (data === "2") {
-            loginkey();
+        console.log(data);
+        if (data === 1) {
+            // loginkey();
+            ipcRenderer.send('landing');
         } else {
             ipcRenderer.send('login');
         }
@@ -216,32 +259,60 @@ function loginkey() {
 
 function getintro(url_Office) {
     url_getintro = url_Office + 'module=Login&action=getIntro&reqname=intro';
-    $.get(url_getintro, function (data, status) {
-        if (data !== '("access denied!")') {
-            data = data.replace('(', '');
-            data = data.replace(')', '');
-            var parsed = JSON.parse(data);
-            var arr = [];
-            for (var x in parsed) {
-                arr.push(parsed[x]);
-            }
-            keytar.getPassword('config', 'islogin').then(function (data) {
-                if (data === "1") {
-                    shwointro(arr);
-                    return true
-                } else {
-                    saveintro(arr)
-                    return true
+    $.ajax({
+        type:"GET",
+        url:url_getintro,
+        async:false,
+        success :function (res) {
+            if (res !== '("access denied!")') {
+                data = res.replace('(', '');
+                data = res.replace(')', '');
+                var parsed = JSON.parse(data);
+                var arr = [];
+                for (var x in parsed) {
+                    arr.push(parsed[x]);
                 }
-            }).catch(function () {
-                saveintro(arr)
-                return true
-            });
-        } else {
-            alert('no');
-            return false;
+                keytar.getPassword('config','islogin').then(function (data) {
+                   if (data===1){
+                       shwointro(arr);
+                       hideloading();
+                       return true;
+                   }else{
+                       saveconfig(1);
+                       saveintro(arr);
+                       hideloading();
+                       return true;
+                   }
+                });
+            }
+        },
+        beforeSend:function () {
+            showloading();
+        },
+        error:function () {
+            Swal("error","error",'error');
+            hideloading();
         }
-    })
+    });
+    // $.get(url_getintro, function (data, status) {
+    //
+    //         keytar.getPassword('config', 'islogin').then(function (data) {
+    //             if (data === "1") {
+    //                 shwointro(arr);
+    //                 return true
+    //             } else {
+    //                 saveintro(arr);
+    //                 return true
+    //             }
+    //         }).catch(function () {
+    //             saveintro(arr);
+    //             return true
+    //         });
+    //     } else {
+    //         alert('no');
+    //         return false;
+    //     }
+    // })
 }
 function showloading() {
     $('.load-wrapp').fadeIn()
