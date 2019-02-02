@@ -90,6 +90,7 @@
                 type : "GET",
                 url : url_Office,
                 // data : JSON.stringify(data),
+                timeout:5000,
                 contentType: "application/json; charset=UTF-8",
                 success: function (response) {
                     // console.log(url_Office);
@@ -113,8 +114,27 @@
                 error: function (e) {
                     // alert("url cheeked");
                      hideloading();
-                    Swal("ادرس وارد شده اشتباه میباشد","pll",'error')
-                },
+                     clearInterval();
+                    swal({
+                        buttons:{
+                            ok:{
+                                text:"تلاش دوباره"
+                            }
+                        },
+                        icon:"error",
+                        tittle:"خطا اتصال",
+                        text:"ادرس وارد شده اشتباه و یا ارتباط شما با شبکه قطع میباشد"
+                    }).then((value)=> {
+                       switch (value) {
+                           case "ok":
+                               captchareload(url_Offices);
+                               break;
+                           default:
+                               captchareload(url_Offices);
+                               break;
+                       }
+                    });
+                }
             });
                  // $('#valid1').fadeOut(1000);
                  //  $('#form2').fadeIn(2000);
@@ -146,8 +166,9 @@
                     },
                     success: "valid2",
                     submitHandler: function () {
-                        url_Office = url_Office.replace('UI/login.php', 'Runtime/process.php?');
-                        url_Office = url_Office.replace('UI/index.php', 'Runtime/process.php?');
+                        showloading();
+                        // url_Office = url_Office.replace('UI/login.php', 'Runtime/process.php?');
+                        // url_Office = url_Office.replace('UI/index.php', 'Runtime/process.php?');
                         var usern = $('#username').val();
                         var passwd = $('#password').val();
                          keytar.getPassword('captcha','en_di').then(function (data) {
@@ -159,15 +180,10 @@
                              keytar.getPassword('url_Office','url_Office').then(function (data) {
                                  AjaxService(data,usern,passwd,$('#captcha').val());
                              });
-
                          });
-
                     }
                 });
     }
-
-
 </script>
-
 </body>
 </html>

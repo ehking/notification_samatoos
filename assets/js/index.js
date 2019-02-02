@@ -15,10 +15,11 @@ function AjaxService(url_Office, username, password,capt) {
         if (pass){
             var login=l_login(url_Office,capt,username,pass);
             if (login){
-                console.log(login);
+                // console.log(login);
                 if (login['success']===true && !login['error']){
-                    Swal("success",'success',"success");
-                    getintro(url_Office);
+                    // Swal("success",'success',"success");
+                    // getintro(url_Office);
+                    saveconfig(1);
                     ipcRenderer.send('landing');
                     return;
                 } else{
@@ -34,7 +35,7 @@ function AjaxService(url_Office, username, password,capt) {
         Swal("error","error","error");
         reloadcaptcha(url_Office);
         hideloading();
-    },2000);
+    },1000);
 }
 
 function  reloadcaptcha(url_office) {
@@ -63,7 +64,7 @@ function l_login(url_Office,capt,username,pass) {
     else
         url_login = url_Office + 'module=Login&action=login' + '&username=' + username + '&pass=' + pass+'&captcha='+capt;
 
-    console.log(url_login);
+    // console.log(url_login);
     $.ajax({
         type:"GET",
         url:url_login,
@@ -91,6 +92,7 @@ function  getsalt(url_office,username) {
             type:"GET",
             url:url_salt,
             async:false,
+            timeout:5000,
             beforeSend:function () {
                 showloading();
                 var state=false;
@@ -266,24 +268,27 @@ function getintro(url_Office) {
         success :function (res) {
             if (res !== '("access denied!")') {
                 data = res.replace('(', '');
-                data = res.replace(')', '');
+                data = data.replace(')', '');
                 var parsed = JSON.parse(data);
                 var arr = [];
                 for (var x in parsed) {
                     arr.push(parsed[x]);
                 }
-                keytar.getPassword('config','islogin').then(function (data) {
-                   if (data===1){
-                       shwointro(arr);
-                       hideloading();
-                       return true;
-                   }else{
-                       saveconfig(1);
-                       saveintro(arr);
-                       hideloading();
-                       return true;
-                   }
-                });
+                console.log(arr);
+                shows_sa(arr);
+
+                // keytar.getPassword('config','islogin').then(function (data) {
+                //    if (data==="1"){
+                //        // shwointro(arr);
+                //        hideloading();
+                //        return arr;
+                //    }else{
+                //        saveconfig(1);
+                //        // saveintro(arr);
+                //        hideloading();
+                //        return arr;
+                //    }
+                // });
             }
         },
         beforeSend:function () {
@@ -350,5 +355,170 @@ function hideloading() {
 //             )
 //     }
 // }
+
+
+function logintry() {
+    swal({
+        buttons:{
+            ok:{
+                text:"تلاش دوباره"
+            }
+        },
+        icon:"error",
+        tittle:"خطا اتصال",
+        text:"ادرس وارد شده اشتباه و یا ارتباط شما با شبکه قطع میباشد"
+    }).then((value)=> {
+        switch (value) {
+            case "ok":
+                // try login key login
+                captchareload(url_Offices);
+                break;
+            default:
+                captchareload(url_Offices);
+                break;
+        }
+    });
+}
+function  shows_sa(arr){
+    console.log(arr);
+    for (var i=0;i<arr.length;i++){
+        $(".swiper-wrapper").append("  <div class=\"blog-slider__item swiper-slide\">\n" +
+            "            <div class=\"blog-slider__content\">\n" +
+            "                <span class=\"blog-slider__code\">خلاصه وضعیت</span>\n" +
+            "                <p class=\"p_title\">سمت</p>\n" +
+            "                <div class=\"blog-slider__title\">"+arr[i]['rname']+"</div>\n" +
+            "                <div class=\"blog-slider__text\">نامه های جدید: <span class=\"badge\">"+arr[i]['state']['inbox']+"</span></div>\n" +
+            "                <div class=\"blog-slider__text\">نامه های جدید در دست دستیار:  <span class=\"badge\">"+arr[i]['state']['inbox1']+"</span></div>\n" +
+            "                <div class=\"blog-slider__text\">نامه های در دست اقدام:  <span class=\"badge\">"+arr[i]['state']['inbox']+"</span></div>\n" +
+            "                <div class=\"blog-slider__text\">نامه های تحت پیگیری شما:  <span class=\"badge\">"+arr[i]['state']['inbox']+"</span></div>\n" +
+            "                <div class=\"blog-slider__text\">نامه های پیگیری شده از شما:  <span class=\"badge\">"+arr[i]['state']['inbox']+"</span></div>\n" +
+            "            </div>\n" +
+            "        </div> .");
+    }
+}
+function  showslider() {
+    keytar.getPassword('url_Office','url_Office').then(function (data) {
+        getintro(data);
+    });
+}
+function  landing_login(){
+    // key login cheek
+    showloading();
+    showslider();
+    var commentSlider = {
+
+        'config' : {
+            'container' : $('#wrapper')
+        },
+
+        'init' : function(config) {
+            if(config && typeof(config) == 'object') {
+                $.extend(commentSlider.config, config);
+            }
+
+            //caching dom elements
+            //wrapper
+            commentSlider.$container = commentSlider.config.container;
+
+            //all paragraph tags
+            commentSlider.$paragraphs = commentSlider.$container.
+            find('p');
+
+            //all li tags
+            commentSlider.$dots = commentSlider.$container.
+            find('ul.dots-wrap > li');
+
+            //first li within ul.dots-wrap
+            commentSlider.$firstDot = commentSlider.$container.
+            find('ul.dots-wrap > li:first-child');
+
+            //first p tag within module wrapper
+            commentSlider.$firstParagraph = commentSlider.$container.
+            find('p:first-child');
+
+            //setting first dot with .active class
+            commentSlider.$firstDot.addClass('active');
+
+            //setting first paragraph tag with .active class
+            commentSlider.$firstParagraph.addClass('activeText');
+
+            //initializing functions and defining their parameters
+            commentSlider.currentItem(commentSlider.$paragraphs, commentSlider.$dots);
+            commentSlider.setActiveDot(commentSlider.$dots);
+            commentSlider.timer();
+        },
+
+        //timer function runs necesary functions every five seconds
+        'timer' : function() {
+            setInterval(function(){
+
+            }, 5000);
+        }, //timer function end
+
+        //grabs current numerical class of dot clicked
+        'dotNumber' : function($dot) {
+            var dotClassArray = [];
+            var dotClassList = dotClassArray.push($dot.attr('class'));
+            var splitArray = dotClassArray.toString().split(' ');
+
+            for(i = 0; i < splitArray.length; i++) {
+                if (splitArray[i] === "dot") {
+                    splitArray.splice(i, 1);
+                    var dotClickedNumber = splitArray[i];
+                    commentSlider.paragraphNumber(dotClickedNumber, commentSlider.$paragraphs);
+                }
+            }
+        },//end dotNumber
+
+        'paragraphNumber' : function(dotClickedNumber, $paragraphs) {
+            $paragraphs.each(function() {
+                var $paragraph = $(this);
+                var paragraphClass = $paragraph.attr('class');
+
+                if(paragraphClass === dotClickedNumber) {
+                    $paragraph.addClass('activeText');
+                    $paragraph.siblings().removeClass('activeText').addClass('slideLeft');
+                    setTimeout(function () {
+                        $paragraph.siblings().removeClass('slideLeft');
+                    }, 400);
+                }
+            });
+        },//end paragraphNumber
+
+        //currentItem function gives every paragraph and dot a numerical class
+        //based on their array position
+        'currentItem' : function($paragraphs, $dots) {
+            $paragraphs.each(function(i) {
+                var $paragraph = $(this);
+                $paragraph.addClass([] + i);
+            });
+
+            $dots.each(function(i) {
+                var $dot = $(this);
+                $dot.addClass([] + i);
+            });
+        },//end currentItem
+
+        //setActiveDot adds class active to whichever dot is clicked
+        'setActiveDot' : function($dots) {
+            $dots.each( function() {
+                var $dot = $(this);
+                $dot.on('click', function() {
+                    if($dot.hasClass('active')) {
+                        return false;
+                    } else {
+                        $dot.addClass('active');
+                        $dot.siblings().removeClass('active');
+                    }
+                    commentSlider.dotNumber($dot);
+                });
+            });
+        }//end setActiveDot
+    };
+
+//initializes the entire thing by calling the init function
+    $(document).ready(commentSlider.init);
+    hideloading();
+}
 
 
