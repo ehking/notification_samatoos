@@ -20,7 +20,7 @@
 <input type="checkbox" id="chkbox">
 
 
-<div class="load-wrapp" style="display: none">
+<div class="load-wrapp" style="display: none;">
     <div class="load-2">
         <div class="line"></div>
         <div class="line"></div>
@@ -28,7 +28,6 @@
         <p id="blinkp">درحال بارگزاری</p>
     </div>
 </div>
-<!-- MENU HIDDEN UPPER -->
 <nav class="menu">
         <label for="chkbox"><a class="close"><i class="fa fa-chevron-up"></i></a></label>
     <p style="text-align: right;margin-right: 20px;margin-top: -15px;margin-bottom: 0">تنظیمات <i class="fa fa-tools"></i></p>
@@ -49,54 +48,53 @@
 </section>
 
 
-<div class="swiper-container">
-    <div class="swiper-wrapper">
-        <div class="swiper-slide">Slide 1</div>
-        <div class="swiper-slide">Slide 2</div>
-        <div class="swiper-slide">Slide 3</div>
-        <div class="swiper-slide">Slide 4</div>
-        <div class="swiper-slide">Slide 5</div>
-        <div class="swiper-slide">Slide 6</div>
-        <div class="swiper-slide">Slide 7</div>
-        <div class="swiper-slide">Slide 8</div>
-        <div class="swiper-slide">Slide 9</div>
-        <div class="swiper-slide">Slide 10</div>
+<div class="swiper-container" >
+    <!-- Additional required wrapper -->
+    <div class="swiper-wrapper" >
+        <!-- Slides -->
+
     </div>
-    <!-- Add Pagination -->
+    <!-- If we need pagination -->
     <div class="swiper-pagination"></div>
-    <!-- Add Arrows -->
-    <div class="swiper-button-next"></div>
+
+    <!-- If we need navigation buttons -->
     <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+
+    <!-- If we need scrollbar -->
+    <div class="swiper-scrollbar"></div>
 </div>
+
+<!--<div class="background">-->
+    <!--<div class="container">-->
+        <!--<div class="panel pricing-table" style="background: linear-gradient(135deg,rgba(158, 15, 184, 0.70) -10%,rgba(5, 232, 255, 0.8) 180%);border-radius: 0;color: white" >-->
+
+            <!--<div class="pricing-plan" >-->
+                <!--<h3 style="font-size:18px;position: absolute;margin: 0;top: 14px;right: 52px">خلاصه وضعیت</h3>-->
+                <!--<p style="margin-bottom: 0">سمت کاربر</p>-->
+                <!--<h2 class="pricing-header" style="margin: 0;color: #47485f;font-size: 22px">کارشناس</h2>-->
+                <!--</div>-->
+
+        <!--</div>-->
+    <!--</div>-->
+    <!--<ul class="pricing-features" style="float: right;margin-top: 0">-->
+        <!--<li><span class="badge" style="float: left">9</span>نامه های جدید در دست دستیار </li>-->
+    <!--</ul>-->
+<!--</div>-->
 
 
 <script type="application/javascript">
     window.jQuery = window.$ = require('jquery');
     $(document).ready(function () {
         showloading();
-        var swiper = new Swiper('.swiper-container', {
-            slidesPerView: 1,
-            spaceBetween: 30,
-            loop: true,
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-        });
-
-
-
+        landing_login();
 
         // console.log(ipcRenderer.send('data'));
     });
-    let tes=ipcRenderer.sendSync('data1');
-    keytar.getPassword('config','islogin').then(function (data) {
-        console.log(data);
-    })
+    // let tes=ipcRenderer.sendSync('data1');
+    // keytar.getPassword('config','islogin').then(function (data) {
+    //     console.log(data);
+    // })
 </script>
 </body>
 </html>

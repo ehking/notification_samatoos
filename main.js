@@ -31,7 +31,7 @@ function createWindow() {
     let landing = new BrowserWindow({width: 500, height: 600, frame: false, show: false});
     // and load the index.html of the app.
     // mainWindow.loadFile('index.html');
-    mainWindow.loadFile('landing.html');
+    mainWindow.loadFile('login.html');
     mainWindow.webContents.openDevTools()
     mainWindow.isAlwaysOnTop()
 

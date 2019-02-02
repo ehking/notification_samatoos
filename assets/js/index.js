@@ -261,7 +261,8 @@ function loginkey() {
 
 function getintro(url_Office) {
     url_getintro = url_Office + 'module=Login&action=getIntro&reqname=intro';
-    $.ajax({
+    var arr = [];
+     $.ajax({
         type:"GET",
         url:url_getintro,
         async:false,
@@ -270,54 +271,20 @@ function getintro(url_Office) {
                 data = res.replace('(', '');
                 data = data.replace(')', '');
                 var parsed = JSON.parse(data);
-                var arr = [];
                 for (var x in parsed) {
                     arr.push(parsed[x]);
                 }
-                console.log(arr);
-                shows_sa(arr);
-
-                // keytar.getPassword('config','islogin').then(function (data) {
-                //    if (data==="1"){
-                //        // shwointro(arr);
-                //        hideloading();
-                //        return arr;
-                //    }else{
-                //        saveconfig(1);
-                //        // saveintro(arr);
-                //        hideloading();
-                //        return arr;
-                //    }
-                // });
             }
         },
         beforeSend:function () {
             showloading();
         },
         error:function () {
-            Swal("error","error",'error');
+            Swal("error","wedwed",'error');
             hideloading();
         }
     });
-    // $.get(url_getintro, function (data, status) {
-    //
-    //         keytar.getPassword('config', 'islogin').then(function (data) {
-    //             if (data === "1") {
-    //                 shwointro(arr);
-    //                 return true
-    //             } else {
-    //                 saveintro(arr);
-    //                 return true
-    //             }
-    //         }).catch(function () {
-    //             saveintro(arr);
-    //             return true
-    //         });
-    //     } else {
-    //         alert('no');
-    //         return false;
-    //     }
-    // })
+     return arr;
 }
 function showloading() {
     $('.load-wrapp').fadeIn()
@@ -382,143 +349,63 @@ function logintry() {
 function  shows_sa(arr){
     console.log(arr);
     for (var i=0;i<arr.length;i++){
-        $(".swiper-wrapper").append("  <div class=\"blog-slider__item swiper-slide\">\n" +
-            "            <div class=\"blog-slider__content\">\n" +
-            "                <span class=\"blog-slider__code\">خلاصه وضعیت</span>\n" +
-            "                <p class=\"p_title\">سمت</p>\n" +
-            "                <div class=\"blog-slider__title\">"+arr[i]['rname']+"</div>\n" +
-            "                <div class=\"blog-slider__text\">نامه های جدید: <span class=\"badge\">"+arr[i]['state']['inbox']+"</span></div>\n" +
-            "                <div class=\"blog-slider__text\">نامه های جدید در دست دستیار:  <span class=\"badge\">"+arr[i]['state']['inbox1']+"</span></div>\n" +
-            "                <div class=\"blog-slider__text\">نامه های در دست اقدام:  <span class=\"badge\">"+arr[i]['state']['inbox']+"</span></div>\n" +
-            "                <div class=\"blog-slider__text\">نامه های تحت پیگیری شما:  <span class=\"badge\">"+arr[i]['state']['inbox']+"</span></div>\n" +
-            "                <div class=\"blog-slider__text\">نامه های پیگیری شده از شما:  <span class=\"badge\">"+arr[i]['state']['inbox']+"</span></div>\n" +
-            "            </div>\n" +
-            "        </div> .");
+        $(".swiper-wrapper").append("<div class=\"background swiper-slide\">\n" +
+            "    <div class=\"container \">\n" +
+            "        <div class=\"panel pricing-table\" style=\"background: linear-gradient(135deg,rgba(158, 15, 184, 0.70) -10%,rgba(5, 232, 255, 0.8) 180%);border-radius: 0;color: white\" >\n" +
+            "\n" +
+            "            <div class=\"pricing-plan\" >\n" +
+            "                <h3 style=\"font-size:18px;position: absolute;margin: 0;top: 14px;right: 52px\">خلاصه وضعیت</h3>\n" +
+            "                <p style=\"margin-bottom: 0\">سمت کاربر</p>\n" +
+            "                <h2 class=\"pricing-header\" style=\"margin: 0;color: #47485f;font-size: 22px\">"+arr[i]['rname']+"</h2>\n" +
+            "                </div>\n" +
+            "\n" +
+            "        </div>\n" +
+            "    </div>\n" +
+            "    <ul class=\"pricing-features\" style=\"float: right;margin-top: 0\">\n" +
+            "        <li><span class=\"badge\" style=\"float: left\">"+arr[i]['state']['inbox1']+"</span>نامه های جدید </li>\n" +
+            "        <li><span class=\"badge\" style=\"float: left\">"+arr[i]['state']['inbox2']+"</span>نامه های جدید در دست دستیار</li>\n" +
+            "        <li><span class=\"badge\" style=\"float: left\">"+arr[i]['state']['performing']+"</span>نامه های در دست اقدام </li>\n" +
+            "        <li><span class=\"badge\" style=\"float: left\">"+arr[i]['state']['track1']+"</span>نامه های تحت پیگیری شما</li>\n" +
+            "        <li><span class=\"badge\" style=\"float: left\">"+arr[i]['state']['track2']+"</span>نامه های پیگیری شده از شما </li>\n" +
+            "    </ul>\n" +
+            "</div>");
     }
+    swiper_load();
 }
-function  showslider() {
-    keytar.getPassword('url_Office','url_Office').then(function (data) {
-        getintro(data);
+function  swiper_load() {
+    var swiper = new Swiper('.swiper-container', {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        loop: true,
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        keyboard: {
+            enabled: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
     });
 }
 function  landing_login(){
     // key login cheek
-    showloading();
-    showslider();
-    var commentSlider = {
+    // var y=getItem("url_Office","url_Office");
+console.log("we");
+    var y= keytar.getPassword('url_Office','url_Office').then(function (data) {
+        var arr=getintro(data);
+        shows_sa(arr);
+        hideloading();
+    });
 
-        'config' : {
-            'container' : $('#wrapper')
-        },
 
-        'init' : function(config) {
-            if(config && typeof(config) == 'object') {
-                $.extend(commentSlider.config, config);
-            }
+    //
+    //
+    // showloading();
+    //     console.log('dfg');
 
-            //caching dom elements
-            //wrapper
-            commentSlider.$container = commentSlider.config.container;
-
-            //all paragraph tags
-            commentSlider.$paragraphs = commentSlider.$container.
-            find('p');
-
-            //all li tags
-            commentSlider.$dots = commentSlider.$container.
-            find('ul.dots-wrap > li');
-
-            //first li within ul.dots-wrap
-            commentSlider.$firstDot = commentSlider.$container.
-            find('ul.dots-wrap > li:first-child');
-
-            //first p tag within module wrapper
-            commentSlider.$firstParagraph = commentSlider.$container.
-            find('p:first-child');
-
-            //setting first dot with .active class
-            commentSlider.$firstDot.addClass('active');
-
-            //setting first paragraph tag with .active class
-            commentSlider.$firstParagraph.addClass('activeText');
-
-            //initializing functions and defining their parameters
-            commentSlider.currentItem(commentSlider.$paragraphs, commentSlider.$dots);
-            commentSlider.setActiveDot(commentSlider.$dots);
-            commentSlider.timer();
-        },
-
-        //timer function runs necesary functions every five seconds
-        'timer' : function() {
-            setInterval(function(){
-
-            }, 5000);
-        }, //timer function end
-
-        //grabs current numerical class of dot clicked
-        'dotNumber' : function($dot) {
-            var dotClassArray = [];
-            var dotClassList = dotClassArray.push($dot.attr('class'));
-            var splitArray = dotClassArray.toString().split(' ');
-
-            for(i = 0; i < splitArray.length; i++) {
-                if (splitArray[i] === "dot") {
-                    splitArray.splice(i, 1);
-                    var dotClickedNumber = splitArray[i];
-                    commentSlider.paragraphNumber(dotClickedNumber, commentSlider.$paragraphs);
-                }
-            }
-        },//end dotNumber
-
-        'paragraphNumber' : function(dotClickedNumber, $paragraphs) {
-            $paragraphs.each(function() {
-                var $paragraph = $(this);
-                var paragraphClass = $paragraph.attr('class');
-
-                if(paragraphClass === dotClickedNumber) {
-                    $paragraph.addClass('activeText');
-                    $paragraph.siblings().removeClass('activeText').addClass('slideLeft');
-                    setTimeout(function () {
-                        $paragraph.siblings().removeClass('slideLeft');
-                    }, 400);
-                }
-            });
-        },//end paragraphNumber
-
-        //currentItem function gives every paragraph and dot a numerical class
-        //based on their array position
-        'currentItem' : function($paragraphs, $dots) {
-            $paragraphs.each(function(i) {
-                var $paragraph = $(this);
-                $paragraph.addClass([] + i);
-            });
-
-            $dots.each(function(i) {
-                var $dot = $(this);
-                $dot.addClass([] + i);
-            });
-        },//end currentItem
-
-        //setActiveDot adds class active to whichever dot is clicked
-        'setActiveDot' : function($dots) {
-            $dots.each( function() {
-                var $dot = $(this);
-                $dot.on('click', function() {
-                    if($dot.hasClass('active')) {
-                        return false;
-                    } else {
-                        $dot.addClass('active');
-                        $dot.siblings().removeClass('active');
-                    }
-                    commentSlider.dotNumber($dot);
-                });
-            });
-        }//end setActiveDot
-    };
-
-//initializes the entire thing by calling the init function
-    $(document).ready(commentSlider.init);
-    hideloading();
 }
 
 
