@@ -11,7 +11,7 @@
 <script src="node_modules/swiper/dist/js/swiper.min.js"></script>
 <link rel="stylesheet" href="node_modules/swiper/dist/css/swiper.min.css">
 <link rel="stylesheet" href="assets/css/landing.css">
-<link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.css">
+<link rel="stylesheet" href="assets/css/all.min.css">
 <!--<link rel="stylesheet" href="assets/css/main.css">-->
 <script src="node_modules/jquery/dist/jquery.js"></script>
 <script language="JavaScript" type="application/javascript" src="node_modules/jquery/dist/jquery.js"></script>
@@ -30,11 +30,34 @@
 </div>
 <nav class="menu">
         <label for="chkbox"><a class="close"><i class="fa fa-chevron-up"></i></a></label>
-    <p style="text-align: right;margin-right: 20px;margin-top: -15px;margin-bottom: 0">تنظیمات <i class="fa fa-tools"></i></p>
+    <p style="text-align: center;margin-right: 20px;margin-top: -15px;margin-bottom: 0">تنظیمات <i class="fa fa-tools"></i></p>
 
     <ul>
-        <li class="links" style="text-align: right"><input type="checkbox" class="links">اجرای خودکار برنامه</li>
-        <li><a href="#" onclick="logout()" class="links">خروج</a></li>
+        <h4>   اجرای خودکار برنامه<i class="fa fa-magic"></i></h4>
+        <div class="switch">
+            <input name="radio" type="radio" value="optionone" id="optionone" checked>
+            <label for="optionone">خاموش</label>
+
+            <input name="radio" type="radio" value="optiontwo" id="optiontwo">
+            <label for="optiontwo" class="right">روشن</label>
+
+            <span aria-hidden="true"></span>
+        </div>
+        <h4>  مدت زمان آبدیت<i class="fa fa-clock"></i> </h4>
+        <div class="select" tabindex="1">
+            <input class="selectopt" name="test" type="radio" id="opt1" checked>
+            <label for="opt1" class="option">10 دقیقه</label>
+            <input class="selectopt" name="test" type="radio" id="opt2">
+            <label for="opt2" class="option">15 دقیقه</label>
+            <input class="selectopt" name="test" type="radio" id="opt3">
+            <label for="opt3" class="option">20 دقیقه</label>
+            <input class="selectopt" name="test" type="radio" id="opt4">
+            <label for="opt4" class="option">30 دقیقه</label>
+            <input class="selectopt" name="test" type="radio" id="opt5">
+            <label for="opt5" class="option">60 دقیقه</label>
+        </div>
+        <!--<li class="links" style="text-align: right"><input type="checkbox" class="links">اجرای خودکار برنامه</li>-->
+        <li><a href="#" onclick="logout_alert()" class="links" style=""><i class="fa fa-door-closed"></i>  خروج  </a></li>
     </ul>
 
 </nav>
@@ -47,6 +70,20 @@
         </label>
 </section>
 
+<section class="link1" >
+    <label >
+        <div class="all-arrow">
+            <a onclick="ipcRenderer.send('minimize')" class="an-arrow" style="float: left;margin-left: 5px;font-size: 22px"><i class="fa fa-window-minimize"></i></a>
+        </div>
+    </label>
+</section>
+<section class="link2" style="float: left">
+    <label >
+        <div class="all-arrow">
+            <a onclick="app_exit()" class="an-arrow" style="float: left;margin-left: 5px;font-size: 22px"><i class="fa fa-times-circle"></i></a>
+        </div>
+    </label>
+</section>
 
 <div class="swiper-container" >
     <!-- Additional required wrapper -->
@@ -63,8 +100,17 @@
 
     <!-- If we need scrollbar -->
     <div class="swiper-scrollbar"></div>
+
 </div>
 
+
+<section class="link3" >
+    <label >
+        <div class="all-arrow">
+            <a onclick="landing_login()" class="an-arrow" style="float: left;margin-left: 5px;font-size: 22px"><i class="fa fa-sync-alt"></i></a>
+        </div>
+    </label>
+</section>
 <!--<div class="background">-->
     <!--<div class="container">-->
         <!--<div class="panel pricing-table" style="background: linear-gradient(135deg,rgba(158, 15, 184, 0.70) -10%,rgba(5, 232, 255, 0.8) 180%);border-radius: 0;color: white" >-->
@@ -85,7 +131,33 @@
 
 <script type="application/javascript">
     window.jQuery = window.$ = require('jquery');
+    // const keytar = require('keytar');
+
     $(document).ready(function () {
+        keytar.getPassword('config','time_che').then(function (data) {
+            // console.log(data)
+          document.getElementById(data).checked =true;
+        })
+        $('.select').change(function () {
+            $( ".select input:checked" ).each(function() {
+                var id=document.getElementById($(this));
+                set_time(this.id);
+            });
+        })
+
+
+        $('.switch label').on('click', function(){
+            var indicator = $(this).parent('.switch').find('span');
+            if ( $(this).hasClass('right') ){
+                $(indicator).addClass('right');
+                ipcRenderer.send('auto_enbale');
+                //on
+            } else {
+                $(indicator).removeClass('right');
+                ipcRenderer.send('auto_dis');
+                //off
+            }
+        });
         showloading();
         landing_login();
 
@@ -96,5 +168,6 @@
     //     console.log(data);
     // })
 </script>
+
 </body>
 </html>

@@ -80,6 +80,22 @@ main p{
     color: black;
     animation: blink 1s linear infinite;
 }
+.link1{
+    position: fixed;
+    top: 12px;
+    left: 25px;
+    z-index: 5;
+    transition: all .3s;
+}
+.link2{
+    height: 40px;
+    width: 20px;
+    position: fixed;
+    top: 12px;
+    /*right: 12px;*/
+    z-index: 5;
+    transition: all .3s;
+}
 #blinkp{
     animation: blink 1s linear infinite;
     padding: 0;
@@ -198,6 +214,14 @@ a{
 .main-form > div >a:nth-child(2):hover{
     background:#3DA087;
     color:#fff;
+}
+.btnok{
+    background: #00ACC1 !important;
+    font-family: newfont;
+}
+.btncan{
+    background: #E91E63 !important;
+    font-family: newfont;
 }
 .main-form label{
     text-align: right;

@@ -5,9 +5,24 @@
     <title>login</title>
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/all.min.css">
+
 </head>
 <body>
-
+<section class="link1" >
+    <label >
+        <div class="all-arrow">
+            <a onclick="ipcRenderer.send('minimize')" class="an-arrow" style="float: left;margin-left: 5px;font-size: 22px"><i class="fa fa-window-minimize"></i></a>
+        </div>
+    </label>
+</section>
+<section class="link2" style="float: left">
+    <label >
+        <div class="all-arrow">
+            <a onclick="app_exit()" class="an-arrow" style="float: left;margin-left: 5px;font-size: 22px"><i class="fa fa-times-circle"></i></a>
+        </div>
+    </label>
+</section>
 <div id="block">
     <div class="load-wrapp" style="display: none">
         <div class="load-2">
@@ -32,15 +47,18 @@
         <input type="password" placeholder="گذرواژه" value="" name="password" id="password">
         <br/>
         <br/>
-        <!--<div id="captcha_re" style="display: none">-->
+        <div id="show_capt" style="display: none">
             <p style="text-align: right;font-size: 13px;margin: 0">کد امنیتی را وارد کنید</p>
             <img src="" id="imgcaptcha" alt="" style="width: 100%">
             <input type="text" placeholder="کد امنیتی" value="" name="captcha" id="captcha">
-        <!--</div>-->
+            <!--</div>-->
+        </div>
 
         <hr>
         <button class="button" onclick="callAPI()">وارد شوید</button>
     </form>
+    <!--<div id="captcha_re" style="display: none">-->
+
 
 
 </div>
@@ -57,6 +75,9 @@
 
         $(document).ready(function () {
            keytar.getPassword('config','orig_url').then(function (data) {
+               keytar.getPassword('config','username').then(function (user) {
+                   $('#username').val(user);
+               })
                $('#url').val(data);
            })
         });
@@ -79,7 +100,78 @@
                 },
                 success: "valid1",
                 submitHandler: function () {
-                    captchareload(url_Office);
+                    // console.log('ds')
+                    cheek_captcha(url_Office);
+                    // captchareload(url_Office);
+                }
+            });
+        }
+        function cheek_captcha(url_Offices) {
+            // url_Office=url_Offices+'&module=Captcha&action=show&width=173&height=50';
+            url_Office=url_Offices+'&module=Captcha&action=check';
+            $.ajax({
+                type : "GET",
+                url : url_Office,
+                timeout:8000,
+                async:false,
+                success: function (response) {
+                    data = response.replace('(', '');
+                    data = data.replace(')', '');
+                    var parsed = JSON.parse(data);
+                    if (parsed.success===true){
+                        keytar.setPassword('captcha','en_di',"true");
+                        captchareload(url_Offices);
+                    }else{
+                        setTimeout(function () {
+                            $('#valid1').fadeOut(1000);
+                            $('#valid2').fadeIn(2000);
+                            $("#show_capt").fadeOut();
+                            keytar.setPassword('url_Office','url_Office',url_Offices);
+                            keytar.setPassword('captcha','en_di',"false");
+                            hideloading();
+                        },1000)
+                    }
+                },
+                beforeSend: function(){
+                    showloading()
+                },
+                statusCode: {
+                    // 503: function() {
+                    //     alert("Username already exist");
+                    // }
+                },
+                error: function () {
+                    // alert("url cheeked");
+                    hideloading();
+                    clearInterval();
+                    swal({
+                        buttons:{
+                            ok:{
+                                text:"تلاش دوباره",
+                                confirmButtonColor:"#DD6B55",
+                                className:"btnok"
+                            },
+                            close:{
+                                text:"بازگشت",
+                                className:"btncan"
+                            }
+                        },
+                        icon:"error",
+                        tittle:"خطا اتصال",
+                        text:"ادرس وارد شده اشتباه و یا ارتباط شما با شبکه قطع میباشد"
+                    }).then((value)=> {
+                        switch (value) {
+                            case "ok":
+                                cheek_captcha(url_Offices);
+                                break;
+                            case "close":
+
+                                break;
+                            default:
+                                cheek_captcha(url_Offices);
+                                break;
+                        }
+                    });
                 }
             });
         }
@@ -95,11 +187,12 @@
                 success: function (response) {
                     // console.log(url_Office);
                     setTimeout(function () {
+                        console.log("d");
                         $('#imgcaptcha').attr('src',url_Office);
                         $('#valid1').fadeOut(1000);
                         $('#valid2').fadeIn(2000);
+                        $('#show_capt').fadeIn(2000);
                         keytar.setPassword('url_Office','url_Office',url_Offices);
-                        keytar.setPassword('captcha','en_di',true);
                         hideloading();
                     },1000)
                 },
@@ -111,14 +204,20 @@
                     //     alert("Username already exist");
                     // }
                 },
-                error: function (e) {
+                error: function () {
                     // alert("url cheeked");
                      hideloading();
                      clearInterval();
                     swal({
                         buttons:{
                             ok:{
-                                text:"تلاش دوباره"
+                                text:"تلاش دوباره",
+                                confirmButtonColor:"#DD6B55",
+                                className:"btnok"
+                            },
+                            close:{
+                                text:"بازگشت",
+                                className:"btncan"
                             }
                         },
                         icon:"error",
@@ -127,10 +226,13 @@
                     }).then((value)=> {
                        switch (value) {
                            case "ok":
-                               captchareload(url_Offices);
+                               cheek_captcha(url_Offices);
+                               break;
+                           case "close":
+
                                break;
                            default:
-                               captchareload(url_Offices);
+                               cheek_captcha(url_Offices);
                                break;
                        }
                     });
@@ -141,6 +243,7 @@
         }
 
     function callAPI() {
+            // showloading();
                 $('#valid2').validate({ // initialize the plugin
                     rules: {
                         captcha: {
@@ -150,7 +253,7 @@
                             required: true,
                         },
                         password: {
-                            required: true
+                            required: false
                         }
                     },
                     messages: {
@@ -170,15 +273,16 @@
                         // url_Office = url_Office.replace('UI/login.php', 'Runtime/process.php?');
                         // url_Office = url_Office.replace('UI/index.php', 'Runtime/process.php?');
                         var usern = $('#username').val();
+                        keytar.setPassword('config','username',usern);
                         var passwd = $('#password').val();
                          keytar.getPassword('captcha','en_di').then(function (data) {
-                             if (data==true)
+                             if (data==="true")
                                  capt=$('#captcha').val();
                              else
                                   capt=false;
 
                              keytar.getPassword('url_Office','url_Office').then(function (data) {
-                                 AjaxService(data,usern,passwd,$('#captcha').val());
+                                 AjaxService(data,usern,passwd,capt);
                              });
                          });
                     }

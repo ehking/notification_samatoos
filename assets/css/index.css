@@ -1,0 +1,109 @@
+@font-face {
+    font-family: 'newfont';
+    src: url('font/BYekan.eot'),
+    url('font/BYekan.woff') format('woff'),
+    url('font/BYekan.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+body{
+    overflow: hidden;
+    font-family: 'newfont';
+    background-color: #fefefe;
+
+}
+p{
+    font-family: 'newfont'!important;
+}
+.svg-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: -1;
+}
+
+svg path {
+    transition: .1s;
+}
+
+h3 {
+    font-weight: 400;
+}
+
+header {
+    color: #fff;
+    padding-top: 10px;
+    padding-bottom: 30vw;
+    text-align: center;
+}
+
+main {
+    background: linear-gradient(to bottom, #ffffff 0%, #dddee1 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 10vh 0 80vh;
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+}
+main::after {
+    border-right: 2px dashed #eee;
+    content: '';
+    position: absolute;
+    top: calc(10vh + 1.618em);
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+}
+
+footer {
+    background: #dddee1;
+    padding: 5vh 0;
+    text-align: center;
+    position: relative;
+}
+
+small {
+    opacity: .5;
+    font-weight: 300;
+}
+small a {
+    color: inherit;
+}
+
+main p{
+    margin-top: 18px;
+    margin-left: 20px;
+    font-size: 12px;
+    float: left;
+    color: black;
+    animation: blink 1s linear infinite;
+}
+
+#blinkp{
+    animation: blink 1s linear infinite;
+    padding: 0;
+    margin: 0;
+    color: white;
+}
+@keyframes blink{
+    0%{opacity: 0;}
+    50%{opacity: .5;}
+    100%{opacity: 1;}
+}
+
+/*.square {*/
+    /*width: 12px;*/
+    /*height: 12px;*/
+    /*border-radius: 4px;*/
+    /*background-color: #4b9cdb;*/
+/*}*/
+
+/*.spinner {*/
+    /*position: relative;*/
+    /*width: 45px;*/
+    /*height: 45px;*/
+    /*margin: 0 auto;*/
+/*}*/
+

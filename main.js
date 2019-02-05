@@ -1,43 +1,64 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, dialog, session, ipcMain} = require('electron');
-
-
+const {app,BrowserWindow,ipcMain,Menu,Tray} = require('electron');
+var path = require('path');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
+
+
 let mainWindow
-ipcMain.on('data1', (event, arg) => {
-    console.log(arg) // prints "ping"
-    event.returnValue='d';
-});
+
 const AutoLaunch = require('auto-launch');
 
 var minecraftAutoLauncher = new AutoLaunch({
-    name: 'Notification-samatoos',
+    name: 'Notification-Samatoos',
 });
-minecraftAutoLauncher.isEnabled()
-    .then(function(isEnabled){
-        if(isEnabled){
-            return;
-        }
-        minecraftAutoLauncher.enable();
-    })
-    .catch(function(err){
-        // handle error
-    });
+
+ipcMain.on('auto_enbale',()=>{
+    minecraftAutoLauncher.isEnabled()
+        .then(function(isEnabled){
+            if(isEnabled){
+                return;
+            }
+            minecraftAutoLauncher.enable();
+        })
+        .catch(function(err){
+            // handle error
+        });
+});
+
+ipcMain.on('auto_dis',()=>{
+            minecraftAutoLauncher.disable();
+});
+
 
 function createWindow() {
+    tray = new Tray(path.join(__dirname, 'assets/icon/64x64.png'))
+    // tray = new Tray('./assets/icon/64x64.png')
+    const contextMenu = Menu.buildFromTemplate([
+        { label: 'نمایش', click(){
+            landing.show();
+            } },
+        {
+            label: 'خروج',
+            role:'quit'
+        }
+    ])
+    tray.setToolTip('سامانه اطلاع رسانی اتوماسیون سماتوس')
+    tray.setContextMenu(contextMenu)
+
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 450, height: 200, frame: false})
-    let landing = new BrowserWindow({width: 500, height: 600, frame: false, show: false});
+    mainWindow = new BrowserWindow({width: 450, height: 200, frame: false,resizable:false,icon: path.join(__dirname, 'assets/icon/64x64.png')})
+    let landing = new BrowserWindow({width: 400, height: 540, frame: false, show: false,resizable:false,icon: path.join(__dirname, 'assets/icon/64x64.png')});
     // and load the index.html of the app.
     // mainWindow.loadFile('index.html');
-    mainWindow.loadFile('login.html');
+    mainWindow.loadFile('index.html');
     mainWindow.webContents.openDevTools()
     mainWindow.isAlwaysOnTop()
 
 
-
-
+    tray.on('double-click', () => {
+        landing.isVisible() ? landing.hide() : landing.show()
+    });
 ipcMain.on('login',()=>{
    landing.loadFile('login.html');
     landing.webContents.openDevTools()
@@ -52,14 +73,24 @@ ipcMain.on('login',()=>{
         landing.webContents.openDevTools()
         landing.show();
         mainWindow.hide()
-
     });
     ipcMain.on('hidelogin',()=>{
        mainWindow.hide()
     });
 
 
-
+ipcMain.on('minimize',()=>{
+   landing.hide();
+   // landing.hi
+});
+    ipcMain.on('exit',()=>{
+        landing.close()
+        mainWindow.close();
+        mainWindow.destroy();
+        landing.destroy()
+        app.quit();
+        // landing.hi
+    });
 
 
 

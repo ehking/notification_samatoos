@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Hello World!</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/index.css">
 </head>
 <body>
 <script>
@@ -48,10 +48,8 @@
                 <p>در حال بارگزاری </p>
             </main>
         </div>
-
-
-
         <script type="application/javascript">
+            // const keytar = require('keytar');
             window.jQuery = window.$ = require('jquery');
             anime.timeline({loop: true})
             var relativeOffset = anime.timeline();
@@ -72,61 +70,13 @@
                     duration: 3000
                 });
             $(document).ready(function () {
-               cheeklogin();
+                // const keytar = require('keytar');
+                keytar.setPassword('config','on_inval',"-1");
+                setTimeout(function () {
+                    cheeklogin();
+                },5000);
             });
-            //      const notification = {
-            //          title: 'BTC Alert',
-            //          body: 'BTC just beat your target price!'
-            //      }
-            //      const myNotification = new window.Notification(notification.title, notification)
-            //
-            //      myNotification.show();
-            //
-            //      const notifier = require('node-notifier');
-            //      // String
-            //      notifier.notify('Message');
-            //
-            //      // Object
-            //      notifier.notify({
-            //          title: 'My notification',
-            //          message: 'Hello, there!'
-            //      });
-
-//            if (window.webkitNotifications) {
-//                console.log("Notifications are supported!");
-//            }
-//            else {
-//                console.log("Notifications are not supported for this Browser/OS version yet.");
-//            }
-//            var obj = {charged: 350};
-//
-//            var JSobject = anime({
-//                targets: obj,
-//                charged: 250,
-//                round: 1,
-//                easing: 'linear',
-//                update: function () {
-//                    var el = document.querySelector('.svg #curve');
-//                    el.setAttribute("d",
-//                        "M 800 300 Q 400 " + JSON.stringify(obj.charged) + " 0 300 L 0 0 L 800 0 L 800 300 Z");
-//
-//                }
-//            });
-
-            //      $('.svg').slideUp();
-            //      const {BrowserWindow} = require('electron').remote
-            //      const path = require('path')
-            //
-            //
-            //
-            //      win = new BrowserWindow({ width: 400, height: 320 })
-            //
-            //      win.loadFile('index.html')
-            //      win.show()
-
-        // setTimeout(cheeklogin,1000)
-
         </script>
-
+</div>
 </body>
 </html>
