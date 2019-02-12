@@ -6,52 +6,43 @@ const {ipcRenderer} = require('electron');
 const notifier = require('node-notifier');
 const keytar = require('keytar');
 const Swal = require('sweetalert');
+var path = require('path');
 
 
-function AjaxService(url_Office, username, password,capt) {
-    var salt=getsalt(url_Office,username);
-    if (salt){
-        var pass=gettoken(url_Office,password,salt);
-        if (pass){
-            var login=l_login(url_Office,capt,username,pass);
-            if (login){
-                // console.log(login[1])
-                if (login[0]===true && !login['error']){
-                    // Swal("success",'success',"success");
-                    // getintro(url_Office);
-                    saveconfig(login);
-                    var arr=getintro(url_Office);
-                    saveintro(arr);
-                    keytar.setPassword('config','on_inval',"0");
-                    ipcRenderer.send('landing');
-                    return;
 
-                } else{
-                    Swal("خطا در انجام عملیات",login[0],"error");
-                    if (capt===true)
-                        reloadcaptcha(url_Office);
-                    hideloading();
-                    return;
-                }
+function AjaxLogin(url_Office, username, password,capt) {
+    url_salt = url_Office + 'module=Login&action=getSalt&uname=' + username;
+    $.ajax({
+        type:"GET",
+        url:url_salt,
+        timeout:5000,
+        beforeSend:function () {
+            showloading();
+        },
+        error:function () {
+            error_login('ارتباط شما با سرور قطع میباشد',capt)
+            hideloading();
+        },
+        success:function (data) {
+            var salt=data;
+            if (salt== '("")' ){
+                error_login('نام کاربری و یا پسورد شما اشتباه میباشد لطفا دوباره تلاتش کنید',capt)
+            }else{
+                salt = salt.replace('("', '');
+                salt = salt.replace('")', '');
+                gettoken(url_Office,password,salt,capt,username);
             }
         }
-    }
-    setTimeout(function () {
-        Swal("خطا در انجام عملیات","نام کاربری و یا پسورد شما اشتباه میباشد لطفا دوباره تلاتش کنید","error");
-
-     if (capt===true)    {
-         reloadcaptcha(url_Office);
-     }
-        hideloading();
-    },1000);
+    });
 }
 
+function error_login(error,capt){
+    Swal("خطا در انجام عملیات",error,"error");
+    if (capt===true)
+        reloadcaptcha(url_Office);
+    hideloading();
+}
 function  reloadcaptcha(url_office) {
-    // keytar.getPassword('captcha','en_di').then(function (data) {
-    //    if (data===true){
-    //        url_Office=url_Offices+'&module=Captcha&action=check';
-    //    }
-    // });
    url_captcha=url_office+'&module=Captcha&action=show&width=173&height=50';
    $.ajax({
        type:'GET',
@@ -66,7 +57,6 @@ function  reloadcaptcha(url_office) {
    });
 }
 function l_login(url_Office,capt,username,pass) {
-    showloading();
     if(!capt)
         url_login = url_Office + 'module=Login&action=login' + '&username=' + username + '&pass=' + pass;
     else
@@ -77,13 +67,12 @@ function l_login(url_Office,capt,username,pass) {
     $.ajax({
         type:"GET",
         url:url_login,
-        async:false,
+        timeout:8000,
         beforeSend:function () {
             showloading();
-            res = false;
         },
         error:function () {
-            res=false;
+            error_login('ارتباط شما با سرور قطع میباشد',capt)
         },
         success:function (resp, status) {
             data = resp.replace('(', '');
@@ -93,53 +82,59 @@ function l_login(url_Office,capt,username,pass) {
             for (var x in parsed) {
                 arr.push(parsed[x]);
             }
-            res=arr;
+            if (arr[0]===true && !arr['error']){
+                saveconfig(arr);
+                var arry=getintro(url_Office);
+            } else{
+                Swal("خطا در انجام عملیات",arr[0],"error");
+                error_login(arr[0],capt)
+                // if (capt===true)
+                //     reloadcaptcha(url_Office);
+                // hideloading();
+            }
         }
     });
-    return res;
 }
-function  getsalt(url_office,username) {
-        showloading();
-        url_salt = url_office + 'module=Login&action=getSalt&uname=' + username;
-        $.ajax({
-            type:"GET",
-            url:url_salt,
-            async:false,
-            timeout:5000,
-            beforeSend:function () {
-                showloading();
-                var state=false;
-            },
-            error:function () {
-                hideloading();
-                state=false;
-            },
-            success:function (data) {
-                var  salt=data;
-                if (salt== '("")' ){
-                     state=false;
-                }else{
-                    salt = salt.replace('("', '');
-                    salt = salt.replace('")', '');
-                     state=salt;
-                }
-            }
-        });
-return state;
-}
-function gettoken(url_Office,password,salt) {
+// function  getsalt(url_office,username) {
+//         showloading();
+//         var state=false;
+//         url_salt = url_office + 'module=Login&action=getSalt&uname=' + username;
+//         $.ajax({
+//             type:"GET",
+//             url:url_salt,
+//             async:false,
+//             timeout:5000,
+//             beforeSend:function () {
+//                 showloading();
+//             },
+//             error:function () {
+//                 hideloading();
+//                 state=false;
+//             },
+//             success:function (data) {
+//                 var salt=data;
+//                 if (salt== '("")' ){
+//                      state=false;
+//                 }else{
+//                     salt = salt.replace('("', '');
+//                     salt = salt.replace('")', '');
+//                     console.log(salt);
+//                      state=salt;
+//                 }
+//             }
+//         });
+// return state;
+// }
+function gettoken(url_Office,password,salt,capt,username) {
     url_token = url_Office + 'module=Login&action=getPassToken';
     $.ajax({
         type:"GET",
         url:url_token,
-        async: false,
         beforeSend:function () {
         showloading();
-            var  pass=false;
         },
         error:function () {
-            hideloading();
-            pass=false;
+            error_login('ارتباط شما با سرور قطع میباشد',capt)
         },
         success:function (data, status) {
             if (status === "success") {
@@ -149,10 +144,12 @@ function gettoken(url_Office,password,salt) {
                 var sha1 = require('sha1');
                 var md5 = require('md5');
                pass = sha1(md5(md5(password) + salt) + token);
+               l_login(url_Office,capt,username,pass);
+            }else{
+                error_login('نام کاربری و یا پسورد شما اشتباه میباشد لطفا دوباره تلاتش کنید',capt)
             }
         }
     });
-    return pass;
 }
 
 function  logout() {
@@ -176,13 +173,12 @@ function saveintro(arr) {
         newinbox.push(arr[i]['state']['inbox1']);
     }
     // keytar.setPassword('inbox-store','inbox','null')
-    // console.log(newinbox);
     if (newinbox === undefined || newinbox.length === 0){
-            loginkey();
+                hideloading();
+                 loginkey();
     }else{
         keytar.setPassword('inbox-store', 'inbox', newinbox);
     }
-
 }
 
 function cheek_new_letter(arr,res) {
@@ -198,16 +194,17 @@ function cheek_new_letter(arr,res) {
             // console.log(inbox);
             // console.log(ssinbox);
             if (inbox > ssinbox) {
+                // var msg=arr[j]['rname']."ds";
                 notifier.notify(
                     {
                         title: 'شما یک نامه جدید دارید',
-                        message: arr[j]['rname'],
-                        // icon: path.join(__dirname, 'coulson.jpg'), // Absolute path (doesn't work on balloons)
+                        message: ' در سمت  '+arr[j]['rname'],
+                        icon: path.join(__dirname, 'assets/icon/64x64.png'), // Absolute path (doesn't work on balloons)
                         sound: true, // Only Notification Center or Windows Toasters
                         wait: true // Wait with callback, until user action is taken against notification
                     },
                     function (err, response) {
-                        // Response is response from notification
+
                     }
                 );
             }
@@ -216,7 +213,6 @@ function cheek_new_letter(arr,res) {
 }
 
 function saveconfig(res) {
-
     var keylogin=res[1]
     keytar.setPassword('keylogin','keylogin',keylogin);
         keytar.setPassword('config', 'islogin', '1');
@@ -247,7 +243,7 @@ function loginkey() {
             $.ajax({
                 type:"GET",
                 url:url_keylogin,
-                async: false,
+                timeout:8000,
                 beforeSend:function () {
                     showloading();
                 },
@@ -255,8 +251,22 @@ function loginkey() {
                     keylgin_try();
                 },
                 success:function (data, status) {
-                    landing_login();
-                    // console.log("e");
+
+                    var key = data.replace('(', '');
+                    key = key.replace(')', '')
+                    var parsed = JSON.parse(key);
+                    arr =[];
+                    for (var x in parsed) {
+                        arr.push(parsed[x]);
+                    }
+                    if (arr[0]=="password key not find" || arr['error']){
+                        Swal("خطا در انجام عملیات","key login not find","error");
+                        setTimeout(function () {
+                            logout();
+                        },5000)
+                    }else{
+                         landing_login();
+                    }
                 }
             });
         });
@@ -268,13 +278,11 @@ function loginkey() {
 }
 
 function getintro(url_Office) {
-    showloading();
     url_getintro = url_Office + 'module=Login&action=getIntro&reqname=intro';
     var arr = [];
      $.ajax({
         type:"GET",
         url:url_getintro,
-        async:false,
          timeout:8000,
         success :function (res) {
             if (res !== '("access denied!")') {
@@ -284,8 +292,10 @@ function getintro(url_Office) {
                 for (var x in parsed) {
                     arr.push(parsed[x]);
                 }
+                 saveintro(arr);
+                 keytar.setPassword('config','on_inval',"0");
+                ipcRenderer.send('landing');
             }else{
-                // off internet ot keylogin
                 keylgin_try();
                 arr=false;
             }
@@ -294,13 +304,49 @@ function getintro(url_Office) {
             showloading();
         },
         error:function () {
-            arr=false;
             keylgin_try();
             // hideloading();
         }
     });
-     return arr;
 }
+function getintro_landing(url_Office) {
+    url_getintro = url_Office + 'module=Login&action=getIntro&reqname=intro';
+    var arr = [];
+    $.ajax({
+        type:"GET",
+        url:url_getintro,
+        timeout:8000,
+        success :function (res) {
+            if (res !== '("access denied!")') {
+                data = res.replace('(', '');
+                data = data.replace(')', '');
+                var parsed = JSON.parse(data);
+                for (var x in parsed) {
+                    arr.push(parsed[x]);
+                }
+
+                    shows_sa(arr,false);
+                    hideloading();
+                    cheek_intro(arr);
+                    keytar.getPassword('config','time').then(function (time) {
+                        set_intval(time);
+                    }) // cheek_intro(arr);
+            }else{
+                console.log("d");
+                loginkey();
+            }
+        },
+        beforeSend:function () {
+            showloading();
+        },
+        error:function () {
+            keylgin_try();
+            // hideloading();
+        }
+    });
+}
+
+
 function showloading() {
     $('.load-wrapp').fadeIn()
 }
@@ -313,7 +359,7 @@ keytar.getPassword('config','islogin').then(function (data) {
     if (data==="1"){
         keytar.getPassword('inbox-store','inbox').then(function (res) {
             // console.log(res);
-            cheek_new_letter(arr,res);
+                cheek_new_letter(arr,res);
         })
     } else{
         //redirect login
@@ -431,25 +477,13 @@ function  swiper_load() {
     });
 }
 function  landing_login(){
-    var y= keytar.getPassword('url_Office','url_Office').then(function (data) {
-        var arr=getintro(data);
-        if (arr!==false) {
-            shows_sa(arr,false);
-            hideloading();
-            // console.log(arr);
-            cheek_intro(arr);
-            keytar.getPassword('config','time').then(function (time) {
-                set_intval(time);
-            })
-        }else{
-            loginkey()
-        }
+     keytar.getPassword('url_Office','url_Office').then(function (data) {
+        getintro_landing(data);
     });
 }
 function set_intval(time) {
     keytar.getPassword('config','on_inval').then(function (data) {
         if (data==="1"){
-
         } else{
             var id_intval=setInterval(function () {
                 landing_login();
@@ -466,12 +500,12 @@ function set_time(id) {
     var time;
     switch (id) {
         case "opt1":
-            // time=600000
-            time=5000;
+            time=600000;
+            // time=5000;
             break;
         case "opt2":
-            // time=900000;
-            time=10000;
+            time=900000;
+            // time=10000;
             break;
         case "opt3":
             time=1200000;
@@ -557,4 +591,135 @@ function app_exit(){
         }
     });
 }
+function cheek_captcha(url_Offices) {
+    // url_Office=url_Offices+'&module=Captcha&action=show&width=173&height=50';
+    url_Office=url_Offices+'&module=Captcha&action=check';
+    $.ajax({
+        type : "GET",
+        url : url_Office,
+        timeout:8000,
+        // async:false,
+        success: function (response) {
+            data = response.replace('(', '');
+            data = data.replace(')', '');
+            var parsed = JSON.parse(data);
+            if (parsed.success===true){
+                keytar.setPassword('captcha','en_di',"true");
+                captchareload(url_Offices);
+            }else if (parsed.success===false) {
+                setTimeout(function () {
+                    $('#valid1').fadeOut(1000);
+                    $('#valid2').fadeIn(2000);
+                    $("#show_capt").fadeOut();
+                    keytar.setPassword('url_Office','url_Office',url_Offices);
+                    keytar.setPassword('captcha','en_di',"false");
+                    hideloading();
+                },1000)
+            }
+        },
+        beforeSend: function(){
+            showloading()
+        },
+        statusCode: {
+            // 503: function() {
+            //     alert("Username already exist");
+            // }
+        },
+        error: function () {
+            // alert("url cheeked");
+            hideloading();
+            swal({
+                buttons:{
+                    ok:{
+                        text:"تلاش دوباره",
+                        confirmButtonColor:"#DD6B55",
+                        className:"btnok"
+                    },
+                    close:{
+                        text:"بازگشت",
+                        className:"btncan"
+                    }
+                },
+                icon:"error",
+                tittle:"خطا اتصال",
+                text:" ارتباط شما با شبکه قطع میباشد"
+            }).then((value)=> {
+                switch (value) {
+                    case "ok":
+                        cheek_captcha(url_Offices);
+                        break;
+                    case "close":
+                        break;
+                    default:
+                        cheek_captcha(url_Offices);
+                        break;
+                }
+            });
+        }
+    });
+}
+function captchareload(url_Offices) {
+    url_Office=url_Offices+'&module=Captcha&action=show&width=173&height=50';
+    // url_Office=url_Offices+'&module=Captcha&action=check';
+    $.ajax({
+        type : "GET",
+        url : url_Office,
+        // data : JSON.stringify(data),
+        timeout:5000,
+        contentType: "application/json; charset=UTF-8",
+        success: function (response) {
+            // console.log(url_Office);
+            setTimeout(function () {
+                $('#imgcaptcha').attr('src',url_Office);
+                $('#valid1').fadeOut(1000);
+                $('#valid2').fadeIn(2000);
+                $('#show_capt').fadeIn(2000);
+                keytar.setPassword('url_Office','url_Office',url_Offices);
+                hideloading();
+            },1000)
+        },
+        beforeSend: function(){
+            showloading()
+        },
+        statusCode: {
+            // 503: function() {
+            //     alert("Username already exist");
+            // }
+        },
+        error: function () {
+            // alert("url cheeked");
+            hideloading();
+            clearInterval();
+            swal({
+                buttons:{
+                    ok:{
+                        text:"تلاش دوباره",
+                        confirmButtonColor:"#DD6B55",
+                        className:"btnok"
+                    },
+                    close:{
+                        text:"بازگشت",
+                        className:"btncan"
+                    }
+                },
+                icon:"error",
+                tittle:"خطا اتصال",
+                text:"ادرس وارد شده اشتباه و یا ارتباط شما با شبکه قطع میباشد"
+            }).then((value)=> {
+                switch (value) {
+                    case "ok":
+                        cheek_captcha(url_Offices);
+                        break;
+                    case "close":
 
+                        break;
+                    default:
+                        cheek_captcha(url_Offices);
+                        break;
+                }
+            });
+        }
+    });
+    // $('#valid1').fadeOut(1000);
+    //  $('#form2').fadeIn(2000);
+}

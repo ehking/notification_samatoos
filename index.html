@@ -16,7 +16,7 @@
 
 <!-- normal script imports etc  -->
 <script src="node_modules/jquery/dist/jquery.js"></script>
-<script language="JavaScript" type="application/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+<script language="JavaScript" type="application/javascript" src="assets/js/jquery.js"></script>
 <script language="JavaScript" type="application/javascript" src="assets/js/anim.js"></script>
 <script language="JavaScript" type="application/javascript" src="assets/js/index.js"></script>
 <!--<script language="JavaScript" type="application/javascript" src="assets/js/index.js"></script>-->
@@ -49,11 +49,10 @@
             </main>
         </div>
         <script type="application/javascript">
-            // const keytar = require('keytar');
+            // var keytar = require('keytar');
             window.jQuery = window.$ = require('jquery');
             anime.timeline({loop: true})
             var relativeOffset = anime.timeline();
-
             relativeOffset
                 .add({
                     targets: '#relativeOffset .square.el',

@@ -67,8 +67,8 @@
 
 
 </div>
-<script type="application/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
-<script type="application/javascript" src="node_modules/jquery-validation/dist/jquery.validate.min.js"></script>
+<script type="application/javascript" src="assets/js/jquery.js"></script>
+<script type="application/javascript" src="assets/js/jquery.validate.min.js"></script>
 <script type="application/javascript" src="assets/js/index.js"></script>
 <script type="application/javascript">
     window.jQuery = window.$ = require('jquery');
@@ -100,147 +100,14 @@
                 },
                 success: "valid1",
                 submitHandler: function () {
+                    showloading();
                     // console.log('ds')
                     cheek_captcha(url_Office);
                     // captchareload(url_Office);
                 }
             });
         }
-        function cheek_captcha(url_Offices) {
-            // url_Office=url_Offices+'&module=Captcha&action=show&width=173&height=50';
-            url_Office=url_Offices+'&module=Captcha&action=check';
-            $.ajax({
-                type : "GET",
-                url : url_Office,
-                timeout:8000,
-                async:false,
-                success: function (response) {
-                    data = response.replace('(', '');
-                    data = data.replace(')', '');
-                    var parsed = JSON.parse(data);
-                    if (parsed.success===true){
-                        keytar.setPassword('captcha','en_di',"true");
-                        captchareload(url_Offices);
-                    }else{
-                        setTimeout(function () {
-                            $('#valid1').fadeOut(1000);
-                            $('#valid2').fadeIn(2000);
-                            $("#show_capt").fadeOut();
-                            keytar.setPassword('url_Office','url_Office',url_Offices);
-                            keytar.setPassword('captcha','en_di',"false");
-                            hideloading();
-                        },1000)
-                    }
-                },
-                beforeSend: function(){
-                    showloading()
-                },
-                statusCode: {
-                    // 503: function() {
-                    //     alert("Username already exist");
-                    // }
-                },
-                error: function () {
-                    // alert("url cheeked");
-                    hideloading();
-                    clearInterval();
-                    swal({
-                        buttons:{
-                            ok:{
-                                text:"تلاش دوباره",
-                                confirmButtonColor:"#DD6B55",
-                                className:"btnok"
-                            },
-                            close:{
-                                text:"بازگشت",
-                                className:"btncan"
-                            }
-                        },
-                        icon:"error",
-                        tittle:"خطا اتصال",
-                        text:"ادرس وارد شده اشتباه و یا ارتباط شما با شبکه قطع میباشد"
-                    }).then((value)=> {
-                        switch (value) {
-                            case "ok":
-                                cheek_captcha(url_Offices);
-                                break;
-                            case "close":
 
-                                break;
-                            default:
-                                cheek_captcha(url_Offices);
-                                break;
-                        }
-                    });
-                }
-            });
-        }
-        function captchareload(url_Offices) {
-            url_Office=url_Offices+'&module=Captcha&action=show&width=173&height=50';
-            // url_Office=url_Offices+'&module=Captcha&action=check';
-            $.ajax({
-                type : "GET",
-                url : url_Office,
-                // data : JSON.stringify(data),
-                timeout:5000,
-                contentType: "application/json; charset=UTF-8",
-                success: function (response) {
-                    // console.log(url_Office);
-                    setTimeout(function () {
-                        console.log("d");
-                        $('#imgcaptcha').attr('src',url_Office);
-                        $('#valid1').fadeOut(1000);
-                        $('#valid2').fadeIn(2000);
-                        $('#show_capt').fadeIn(2000);
-                        keytar.setPassword('url_Office','url_Office',url_Offices);
-                        hideloading();
-                    },1000)
-                },
-                beforeSend: function(){
-                     showloading()
-                },
-                statusCode: {
-                    // 503: function() {
-                    //     alert("Username already exist");
-                    // }
-                },
-                error: function () {
-                    // alert("url cheeked");
-                     hideloading();
-                     clearInterval();
-                    swal({
-                        buttons:{
-                            ok:{
-                                text:"تلاش دوباره",
-                                confirmButtonColor:"#DD6B55",
-                                className:"btnok"
-                            },
-                            close:{
-                                text:"بازگشت",
-                                className:"btncan"
-                            }
-                        },
-                        icon:"error",
-                        tittle:"خطا اتصال",
-                        text:"ادرس وارد شده اشتباه و یا ارتباط شما با شبکه قطع میباشد"
-                    }).then((value)=> {
-                       switch (value) {
-                           case "ok":
-                               cheek_captcha(url_Offices);
-                               break;
-                           case "close":
-
-                               break;
-                           default:
-                               cheek_captcha(url_Offices);
-                               break;
-                       }
-                    });
-                }
-            });
-                 // $('#valid1').fadeOut(1000);
-                 //  $('#form2').fadeIn(2000);
-        }
 
     function callAPI() {
             // showloading();
@@ -282,7 +149,7 @@
                                   capt=false;
 
                              keytar.getPassword('url_Office','url_Office').then(function (data) {
-                                 AjaxService(data,usern,passwd,capt);
+                                 AjaxLogin(data,usern,passwd,capt);
                              });
                          });
                     }

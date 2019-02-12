@@ -7,14 +7,13 @@
 
 <body>
 
-<script src="node_modules/jquery/dist/jquery.js"></script>
+<script src="assets/js/jquery.js"></script>
 <script src="node_modules/swiper/dist/js/swiper.min.js"></script>
 <link rel="stylesheet" href="node_modules/swiper/dist/css/swiper.min.css">
 <link rel="stylesheet" href="assets/css/landing.css">
 <link rel="stylesheet" href="assets/css/all.min.css">
 <!--<link rel="stylesheet" href="assets/css/main.css">-->
-<script src="node_modules/jquery/dist/jquery.js"></script>
-<script language="JavaScript" type="application/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+
 <script language="JavaScript" type="application/javascript" src="assets/js/anim.js"></script>
 <script language="JavaScript" type="application/javascript" src="assets/js/index.js"></script>
 <input type="checkbox" id="chkbox">
@@ -57,7 +56,7 @@
             <label for="opt5" class="option">60 دقیقه</label>
         </div>
         <!--<li class="links" style="text-align: right"><input type="checkbox" class="links">اجرای خودکار برنامه</li>-->
-        <li><a href="#" onclick="logout_alert()" class="links" style=""><i class="fa fa-door-closed"></i>  خروج  </a></li>
+        <li><a href="#" onclick="logout_alert()" class="links" style="">  خروج  <i class="fa fa-door-closed"></i></a></li>
     </ul>
 
 </nav>
@@ -158,7 +157,6 @@
                 //off
             }
         });
-        showloading();
         landing_login();
 
         // console.log(ipcRenderer.send('data'));

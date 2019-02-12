@@ -14,12 +14,13 @@ function getInstallerConfig () {
     const outPath = path.join(rootPath, 'build')
 
     return Promise.resolve({
-        appDirectory: path.join(outPath, 'Notification_samatoos-win32-x64/'),
-        authors: 'Christian Engvall',
-        noMsi: true,
+        appDirectory: path.join(outPath, 'notification_samatoos-win32-x64/'),
+        authors: 'Samatoos',
+        noMsi: false,
+        setupMsi:true,
         outputDirectory: path.join(outPath, 'windows-installer'),
-        exe: 'Notification_samatoos.exe',
-        setupExe: 'ElectronTutorialAppInstaller.exe',
+        exe: 'notification_samatoos.exe',
+        setupExe: 'notification_samatoos.exe',
         setupIcon: path.join(rootPath, 'assets', 'icon', 'sama.ico')
     })
 }
