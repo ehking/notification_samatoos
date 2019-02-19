@@ -84,7 +84,7 @@ function l_login(url_Office,capt,username,pass) {
             }
             if (arr[0]===true && !arr['error']){
                 saveconfig(arr);
-                var arry=getintro(url_Office);
+                getintro(url_Office);
             } else{
                 Swal("خطا در انجام عملیات",arr[0],"error");
                 error_login(arr[0],capt)
@@ -160,6 +160,7 @@ function  logout() {
     keytar.deletePassword('config', 'islogin');
     keytar.deletePassword('config', 'time');
     keytar.deletePassword('config','time_che');
+    keytar.deletePassword('url_Office','url_Office');
     ipcRenderer.send('login');
     // setTimeout(function () {
     //    // Swal("success",'logout',"info");
@@ -173,12 +174,12 @@ function saveintro(arr) {
         newinbox.push(arr[i]['state']['inbox1']);
     }
     // keytar.setPassword('inbox-store','inbox','null')
-    if (newinbox === undefined || newinbox.length === 0){
-                hideloading();
-                 loginkey();
-    }else{
+    // if (newinbox === undefined || newinbox.length === 0){
+    //             // hideloading();
+    //              loginkey();
+    // }else{
         keytar.setPassword('inbox-store', 'inbox', newinbox);
-    }
+    // }
 }
 
 function cheek_new_letter(arr,res) {
@@ -194,7 +195,8 @@ function cheek_new_letter(arr,res) {
             // console.log(inbox);
             // console.log(ssinbox);
             if (inbox > ssinbox) {
-                // var msg=arr[j]['rname']."ds";
+                var msg=arr[j]['rname']+" در سمت"
+                ipcRenderer.send('message', msg);
                 notifier.notify(
                     {
                         title: 'شما یک نامه جدید دارید',
@@ -202,21 +204,23 @@ function cheek_new_letter(arr,res) {
                         icon: path.join(__dirname, 'assets/icon/64x64.png'), // Absolute path (doesn't work on balloons)
                         sound: true, // Only Notification Center or Windows Toasters
                         wait: true // Wait with callback, until user action is taken against notification
-                    },
+                      },
                     function (err, response) {
 
                     }
                 );
             }
         }
-        saveintro(arr);
+        setTimeout(function () {
+            saveintro(arr);
+        },1000);
 }
 
 function saveconfig(res) {
-    var keylogin=res[1]
+    var keylogin=res[1];
     keytar.setPassword('keylogin','keylogin',keylogin);
-        keytar.setPassword('config', 'islogin', '1');
-        keytar.setPassword('config', 'time', '900000');
+    keytar.setPassword('config', 'islogin', '1');
+    keytar.setPassword('config', 'time', '900000');
     keytar.setPassword('config','time_che',"opt2");
 }
 
@@ -232,7 +236,6 @@ function cheeklogin() {
     }).catch(function () {
         ipcRenderer.send('login');
     });
-
 }
 function loginkey() {
     keytar.getPassword('url_Office','url_Office').then(function (data) {
@@ -240,6 +243,7 @@ function loginkey() {
         keytar.getPassword('keylogin','keylogin').then(function (data) {
             // alert(url_Office);
             url_keylogin=url_Offices+'module=Login&action=KeyLogin&KeyLogin='+data;
+            console.log(url_keylogin);
             $.ajax({
                 type:"GET",
                 url:url_keylogin,
@@ -251,7 +255,6 @@ function loginkey() {
                     keylgin_try();
                 },
                 success:function (data, status) {
-
                     var key = data.replace('(', '');
                     key = key.replace(')', '')
                     var parsed = JSON.parse(key);
@@ -259,10 +262,11 @@ function loginkey() {
                     for (var x in parsed) {
                         arr.push(parsed[x]);
                     }
-                    if (arr[0]=="password key not find" || arr['error']){
+                    console.log(arr);
+                    if (arr[0]==="password key not find" || arr['error']){
                         Swal("خطا در انجام عملیات","key login not find","error");
                         setTimeout(function () {
-                            logout();
+                        logout();
                         },5000)
                     }else{
                          landing_login();
@@ -292,9 +296,11 @@ function getintro(url_Office) {
                 for (var x in parsed) {
                     arr.push(parsed[x]);
                 }
-                 saveintro(arr);
-                 keytar.setPassword('config','on_inval',"0");
-                ipcRenderer.send('landing');
+                setTimeout(function () {
+                    saveintro(arr);
+                    keytar.setPassword('config','on_inval',"0");
+                    ipcRenderer.send('landing');
+                },1000);
             }else{
                 keylgin_try();
                 arr=false;
@@ -324,15 +330,16 @@ function getintro_landing(url_Office) {
                 for (var x in parsed) {
                     arr.push(parsed[x]);
                 }
-
-                    shows_sa(arr,false);
-                    hideloading();
-                    cheek_intro(arr);
-                    keytar.getPassword('config','time').then(function (time) {
-                        set_intval(time);
-                    }) // cheek_intro(arr);
+                  setTimeout(function () {
+                      shows_sa(arr,false);
+                      hideloading();
+                      cheek_intro(arr);
+                      keytar.getPassword('config','time').then(function (time) {
+                          set_intval(time);
+                      }) // cheek_intro(arr);
+                  },1000)
             }else{
-                console.log("d");
+                console.log(url_Office);
                 loginkey();
             }
         },
@@ -603,6 +610,7 @@ function cheek_captcha(url_Offices) {
             data = response.replace('(', '');
             data = data.replace(')', '');
             var parsed = JSON.parse(data);
+            keytar.setPassword('url_Office','url_Office',url_Offices);
             if (parsed.success===true){
                 keytar.setPassword('captcha','en_di',"true");
                 captchareload(url_Offices);
@@ -611,7 +619,6 @@ function cheek_captcha(url_Offices) {
                     $('#valid1').fadeOut(1000);
                     $('#valid2').fadeIn(2000);
                     $("#show_capt").fadeOut();
-                    keytar.setPassword('url_Office','url_Office',url_Offices);
                     keytar.setPassword('captcha','en_di',"false");
                     hideloading();
                 },1000)
@@ -674,7 +681,6 @@ function captchareload(url_Offices) {
                 $('#valid1').fadeOut(1000);
                 $('#valid2').fadeIn(2000);
                 $('#show_capt').fadeIn(2000);
-                keytar.setPassword('url_Office','url_Office',url_Offices);
                 hideloading();
             },1000)
         },
